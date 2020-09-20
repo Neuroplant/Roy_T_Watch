@@ -24,8 +24,13 @@ typedef struct {
 
 
 static str_datetime_t g_data, g_data_shadow;
+
+int Sleeptimer_End, Sleeptimer_Now;
+
 TTGOClass *watch = nullptr;
 PCF8563_Class *rtc;
+AXP20X_Class *power;
+BMA *sensor;
 
 void setup()
 {
@@ -38,10 +43,35 @@ void setup()
     // Use compile time
     rtc->check();
 
+    // Turn on the backlight
     watch->openBL();
 
     //Lower the brightness
     watch->bl->adjust(150);
+
+    //Receive objects for easy writing
+    power = watch->power;
+    sensor = watch->bma;
+
+    // Accel parameter structure
+    Acfg cfg;
+    cfg.odr = BMA4_OUTPUT_DATA_RATE_100HZ;
+    cfg.range = BMA4_ACCEL_RANGE_2G;
+    cfg.bandwidth = BMA4_ACCEL_NORMAL_AVG4;
+    cfg.perf_mode = BMA4_CONTINUOUS_MODE;
+    sensor->accelConfig(cfg);
+    sensor->enableAccel();
+    // Enable BMA423 isTilt feature
+    sensor->enableFeature(BMA423_TILT, true);
+    // Enable BMA423 isDoubleClick feature
+    sensor->enableFeature(BMA423_WAKEUP, true);
+    // Turn off feature interrupt
+    // sensor->enableStepCountInterrupt();
+    sensor->enableTiltInterrupt();
+    // It corresponds to isDoubleClick interrupt
+    sensor->enableWakeupInterrupt();
+
+
     lv_obj_t *img1 = lv_img_create(lv_scr_act(), NULL);
 
 //Background
@@ -233,9 +263,21 @@ void setup()
     // Set 20MHz operating speed to reduce power consumption
     setCpuFrequencyMhz(20);
 
-}
+    RTC_Date SleepTimer = rtc->getDateTime();
+    Sleeptimer_End = (int)20+(SleepTimer.second)+(SleepTimer.minute*60)+(SleepTimer.hour*360);
+     
+    }
 
 void loop()
 {
     lv_task_handler();
+    RTC_Date Timer = rtc->getDateTime();
+        Sleeptimer_Now = (int)Timer.second+(Timer.minute*60)+(Timer.hour*360);
+
+    if (Sleeptimer_Now>=Sleeptimer_End) 
+    {
+        watch->powerOff();
+        esp_sleep_enable_ext1_wakeup(GPIO_SEL_39, ESP_EXT1_WAKEUP_ANY_HIGH);
+        esp_deep_sleep_start();
+    }
 }
