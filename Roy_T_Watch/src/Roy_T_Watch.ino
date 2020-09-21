@@ -94,9 +94,7 @@ void setup()
     lv_style_set_text_color(&style, LV_STATE_DEFAULT, LV_COLOR_LIME);  
     lv_style_set_text_color(&style_shadow, LV_STATE_DEFAULT, LV_COLOR_BLACK);
 
- //   lv_style_set_text_font(&style, LV_STATE_DEFAULT, &digital_7_64p);
     lv_style_set_text_font(&style, LV_STATE_DEFAULT, &Matrix_Dot_64p);
-//    lv_style_set_text_font(&style_shadow, LV_STATE_DEFAULT, &digital_7_64p);
     lv_style_set_text_font(&style_shadow, LV_STATE_DEFAULT, &Matrix_Dot_64p);
 
     lv_style_set_text_opa(&style,LV_STATE_DEFAULT,LV_OPA_COVER);
@@ -153,16 +151,17 @@ void setup()
     lv_label_set_text(g_data.year, ".8888");
     lv_obj_align(g_data.year, img1, LV_ALIGN_IN_LEFT_MID, 125, 20);    
 
-// https://docs.lvgl.io/v7/en/html/widgets/img.html
 // Watchface
-
-    static lv_obj_t *Hour_Hand = lv_img_create(img1, NULL);
-    static lv_obj_t *Minute_Hand = lv_img_create(img1, NULL);
-    static lv_obj_t *Second_Hand = lv_img_create(img1, NULL);
 
     static lv_obj_t *Second_Hand_s = lv_img_create(img1, NULL);
     static lv_obj_t *Minute_Hand_s = lv_img_create(img1, NULL);
     static lv_obj_t *Hour_Hand_s = lv_img_create(img1, NULL);
+    
+    static lv_obj_t *Hour_Hand = lv_img_create(img1, NULL);
+    static lv_obj_t *Minute_Hand = lv_img_create(img1, NULL);
+    static lv_obj_t *Second_Hand = lv_img_create(img1, NULL);
+
+
 
 // Dial to do..maybe
 
@@ -195,14 +194,14 @@ void setup()
     LV_IMG_DECLARE(Hour_Hand_S);
     lv_img_set_src(Hour_Hand_s, &Hour_Hand_S);
     lv_img_set_antialias(Hour_Hand_s,true);
-    lv_img_set_pivot(Hour_Hand_s,20,5);
+    lv_img_set_pivot(Hour_Hand_s,20,6);
     lv_obj_align(Hour_Hand_s, img1, LV_ALIGN_IN_TOP_LEFT, 105, 125);
     lv_img_set_angle(Hour_Hand_s,0);
 // MinuteHand
     LV_IMG_DECLARE(Minute_Hand_S);
     lv_img_set_src(Minute_Hand_s, &Minute_Hand_S);
     lv_img_set_antialias(Minute_Hand_s,true);
-    lv_img_set_pivot(Minute_Hand_s,20,5);
+    lv_img_set_pivot(Minute_Hand_s,20,6);
     lv_img_set_antialias(Minute_Hand_s,true);
     lv_obj_align(Minute_Hand_s, img1,  LV_ALIGN_IN_TOP_LEFT, 105, 125);
     lv_img_set_angle(Minute_Hand_s,900);
@@ -210,18 +209,22 @@ void setup()
     LV_IMG_DECLARE(Second_Hand_S);
     lv_img_set_src(Second_Hand_s, &Second_Hand_S);
     lv_img_set_antialias(Second_Hand_s,true);
-    lv_img_set_pivot(Second_Hand_s,20,5);
+    lv_img_set_pivot(Second_Hand_s,20,6);
+        static lv_style_t hand_style;
+
+        lv_style_set_image_recolor(&hand_style, LV_OBJ_PART_MAIN, LV_COLOR_BLACK);
+
     lv_obj_align(Second_Hand_s, img1,  LV_ALIGN_IN_TOP_LEFT, 105, 125);
     lv_img_set_angle(Second_Hand_s,0);
 
     static lv_style_t hand_s_style;
 
-    lv_style_set_image_opa(&hand_s_style, LV_STATE_DEFAULT, LV_OPA_50);
+    lv_style_set_image_opa(&hand_s_style, LV_STATE_DEFAULT, LV_OPA_80);
     lv_style_set_image_recolor(&hand_s_style, LV_STATE_DEFAULT, LV_COLOR_BLACK);
 
-    lv_obj_add_style(Second_Hand_s,LV_STATE_DEFAULT ,&hand_s_style);
-    lv_obj_add_style(Hour_Hand_s,LV_STATE_DEFAULT ,&hand_s_style);
-    lv_obj_add_style(Minute_Hand_s,LV_STATE_DEFAULT ,&hand_s_style);
+    lv_obj_add_style(Second_Hand_s,LV_OBJ_PART_MAIN ,&hand_s_style);
+    lv_obj_add_style(Hour_Hand_s,LV_OBJ_PART_MAIN ,&hand_s_style);
+    lv_obj_add_style(Minute_Hand_s,LV_OBJ_PART_MAIN ,&hand_s_style);
 //
     lv_task_create([](lv_task_t *t) 
     {
