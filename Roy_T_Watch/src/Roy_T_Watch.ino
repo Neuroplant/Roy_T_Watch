@@ -1,6 +1,6 @@
 /**
  * Simple clock display interface, power consumption is about 20mA
- * Written by lewishe
+ * original Written by lewishe
  * */
 #include "config.h"
 
@@ -171,47 +171,47 @@ void setup()
 // Dial   to do..maybe
 
 // HourHand
-    LV_IMG_DECLARE(Hour_Hand_C);
-    lv_img_set_src(Hour_Hand, &Hour_Hand_C);
+    LV_IMG_DECLARE(HourHand);
+    lv_img_set_src(Hour_Hand, &HourHand);
     lv_img_set_antialias(Hour_Hand,true);
     lv_img_set_pivot(Hour_Hand,20,5);
     lv_obj_align(Hour_Hand, img1, LV_ALIGN_IN_TOP_LEFT, 100, 120);
     lv_img_set_angle(Hour_Hand,3300);
 // MinuteHand
-    LV_IMG_DECLARE(Minute_Hand_C);
-    lv_img_set_src(Minute_Hand, &Minute_Hand_C);
+    LV_IMG_DECLARE(MinuteHand);
+    lv_img_set_src(Minute_Hand, &MinuteHand);
     lv_img_set_antialias(Minute_Hand,true);
     lv_img_set_pivot(Minute_Hand,20,5);
     lv_img_set_antialias(Minute_Hand,true);
     lv_obj_align(Minute_Hand, img1,  LV_ALIGN_IN_TOP_LEFT, 100, 120);
     lv_img_set_angle(Minute_Hand,2100);
 // SecondHand
-    LV_IMG_DECLARE(Second_Hand_C);
-    lv_img_set_src(Second_Hand, &Second_Hand_C);
+    LV_IMG_DECLARE(SecondHand);
+    lv_img_set_src(Second_Hand, &SecondHand);
     lv_img_set_antialias(Second_Hand,true);
     lv_img_set_pivot(Second_Hand,20,5);
     lv_obj_align(Second_Hand, img1,  LV_ALIGN_IN_TOP_LEFT, 100, 120);
     lv_img_set_angle(Second_Hand,900);
 
 ///HandShadow
-// HourHand
-    LV_IMG_DECLARE(Hour_Hand_S);
-    lv_img_set_src(Hour_Hand_s, &Hour_Hand_S);
+// HourHand 
+    LV_IMG_DECLARE(HourHand_S);
+    lv_img_set_src(Hour_Hand_s, &HourHand_S);
     lv_img_set_antialias(Hour_Hand_s,true);
     lv_img_set_pivot(Hour_Hand_s,20,6);
     lv_obj_align(Hour_Hand_s, img1, LV_ALIGN_IN_TOP_LEFT, 105, 125);
     lv_img_set_angle(Hour_Hand_s,3300);
 // MinuteHand
-    LV_IMG_DECLARE(Minute_Hand_S);
-    lv_img_set_src(Minute_Hand_s, &Minute_Hand_S);
+    LV_IMG_DECLARE(MinuteHand_S);
+    lv_img_set_src(Minute_Hand_s, &MinuteHand_S);
     lv_img_set_antialias(Minute_Hand_s,true);
     lv_img_set_pivot(Minute_Hand_s,20,6);
     lv_img_set_antialias(Minute_Hand_s,true);
     lv_obj_align(Minute_Hand_s, img1,  LV_ALIGN_IN_TOP_LEFT, 105, 125);
     lv_img_set_angle(Minute_Hand_s,2100);
 // SecondHand
-    LV_IMG_DECLARE(Second_Hand_S);
-    lv_img_set_src(Second_Hand_s, &Second_Hand_S);
+    LV_IMG_DECLARE(SecondHand_S);
+    lv_img_set_src(Second_Hand_s, &SecondHand_S);
     lv_img_set_antialias(Second_Hand_s,true);
     lv_img_set_pivot(Second_Hand_s,20,6);
     lv_obj_align(Second_Hand_s, img1,  LV_ALIGN_IN_TOP_LEFT, 105, 125);
