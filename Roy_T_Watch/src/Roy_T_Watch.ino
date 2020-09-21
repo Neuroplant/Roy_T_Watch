@@ -31,12 +31,14 @@ PCF8563_Class *rtc;
 #ifdef SLEEP_TIMER
 int Angel_S, Angel_M, Angel_H;
 int Sleeptimer_End, Sleeptimer_Now;
+
 AXP20X_Class *power;
 BMA *sensor;
 #endif //SLEEP_TIMER
 
 #ifdef BAT_LVL
 int BatLvl;
+
 #endif //BAT_LVL
 
 
@@ -177,28 +179,6 @@ void setup()
 
 // Dial   to do..maybe
 
-// HourHand
-    LV_IMG_DECLARE(HourHand);
-    lv_img_set_src(Hour_Hand, &HourHand);
-    lv_img_set_antialias(Hour_Hand,true);
-    lv_img_set_pivot(Hour_Hand,20,5);
-    lv_obj_align(Hour_Hand, img1, LV_ALIGN_IN_TOP_LEFT, 100, 120);
-    lv_img_set_angle(Hour_Hand,3300);
-// MinuteHand
-    LV_IMG_DECLARE(MinuteHand);
-    lv_img_set_src(Minute_Hand, &MinuteHand);
-    lv_img_set_antialias(Minute_Hand,true);
-    lv_img_set_pivot(Minute_Hand,20,5);
-    lv_img_set_antialias(Minute_Hand,true);
-    lv_obj_align(Minute_Hand, img1,  LV_ALIGN_IN_TOP_LEFT, 100, 120);
-    lv_img_set_angle(Minute_Hand,2100);
-// SecondHand
-    LV_IMG_DECLARE(SecondHand);
-    lv_img_set_src(Second_Hand, &SecondHand);
-    lv_img_set_antialias(Second_Hand,true);
-    lv_img_set_pivot(Second_Hand,20,5);
-    lv_obj_align(Second_Hand, img1,  LV_ALIGN_IN_TOP_LEFT, 100, 120);
-    lv_img_set_angle(Second_Hand,900);
 
 ///HandShadow
 // HourHand 
@@ -223,14 +203,31 @@ void setup()
     lv_img_set_pivot(Second_Hand_s,20,6);
     lv_obj_align(Second_Hand_s, img1,  LV_ALIGN_IN_TOP_LEFT, 105, 125);
     lv_img_set_angle(Second_Hand_s,900);
-	
-// Normal Style
-    static lv_style_t hand_style;
-	lv_style_set_image_recolor(&hand_style, LV_OBJ_PART_MAIN, LV_COLOR_BLACK);
 
-    lv_obj_add_style(Second_Hand,LV_OBJ_PART_MAIN ,&hand_style);
-    lv_obj_add_style(Hour_Hand,LV_OBJ_PART_MAIN ,&hand_style);
-    lv_obj_add_style(Minute_Hand,LV_OBJ_PART_MAIN ,&hand_style);
+// Normal Hand
+
+// HourHand
+    LV_IMG_DECLARE(HourHand);
+    lv_img_set_src(Hour_Hand, &HourHand);
+    lv_img_set_antialias(Hour_Hand,true);
+    lv_img_set_pivot(Hour_Hand,20,5);
+    lv_obj_align(Hour_Hand, img1, LV_ALIGN_IN_TOP_LEFT, 100, 120);
+    lv_img_set_angle(Hour_Hand,3300);
+// MinuteHand
+    LV_IMG_DECLARE(MinuteHand);
+    lv_img_set_src(Minute_Hand, &MinuteHand);
+    lv_img_set_antialias(Minute_Hand,true);
+    lv_img_set_pivot(Minute_Hand,20,5);
+    lv_img_set_antialias(Minute_Hand,true);
+    lv_obj_align(Minute_Hand, img1,  LV_ALIGN_IN_TOP_LEFT, 100, 120);
+    lv_img_set_angle(Minute_Hand,2100);
+// SecondHand
+    LV_IMG_DECLARE(SecondHand);
+    lv_img_set_src(Second_Hand, &SecondHand);
+    lv_img_set_antialias(Second_Hand,true);
+    lv_img_set_pivot(Second_Hand,20,5);
+    lv_obj_align(Second_Hand, img1,  LV_ALIGN_IN_TOP_LEFT, 100, 120);
+    lv_img_set_angle(Second_Hand,900);
 	
 // Shadow Style
    static lv_style_t hand_s_style;
@@ -240,17 +237,27 @@ void setup()
     lv_obj_add_style(Second_Hand_s,LV_OBJ_PART_MAIN ,&hand_s_style);
     lv_obj_add_style(Hour_Hand_s,LV_OBJ_PART_MAIN ,&hand_s_style);
     lv_obj_add_style(Minute_Hand_s,LV_OBJ_PART_MAIN ,&hand_s_style);
+
+// Normal Style
+    static lv_style_t hand_style;
+
+    lv_obj_add_style(Second_Hand,LV_OBJ_PART_MAIN ,&hand_style);
+    lv_obj_add_style(Hour_Hand,LV_OBJ_PART_MAIN ,&hand_style);
+    lv_obj_add_style(Minute_Hand,LV_OBJ_PART_MAIN ,&hand_style);
 	
 #endif //ANALOG_1
 
 #ifdef BAT_LVL
 	lv_obj_t *BatGauge = lv_gauge_create(img1, NULL);
-	lv_gauge_set_needle_count(&BatGauge, 1, LV_COLOR_BLACK);
+    static lv_color_t needle_colors[1];
+     needle_colors[0] = LV_COLOR_BLACK;
+     	lv_gauge_set_needle_count(BatGauge, 1, needle_colors);
 	static lv_style_t BatGauge_Style;
-	lv_style_set_bg_opa(&BatGauge_Style, LV_STATE_DEFAULT,LV_OPA_TRANSPERENT)
+	lv_style_set_bg_opa(&BatGauge_Style, LV_STATE_DEFAULT,LV_OPA_TRANSP);
 	lv_gauge_set_value(BatGauge,1,50);
 	lv_obj_set_size(BatGauge, 20, 20);
     lv_obj_align(BatGauge, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 0);
+
 
 #endif //BAT_LVL	
 
