@@ -18,4 +18,4 @@
 #define SLEEP_TIMER 20			//comment to disenable Sleep after 20s
 #define DIGITAL_1				//comment to disenable Digital Watchface
 #define ANALOG_1				//comment to disenable Analog Watchface
-#define BAT_LEVL				//comment to disenable Battery Level Gauge
+#define BAT_LVL				//comment to disenable Battery Level Gauge
