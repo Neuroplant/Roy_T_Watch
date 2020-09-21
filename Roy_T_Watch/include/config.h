@@ -11,14 +11,11 @@
 // => Function select
 #define LILYGO_WATCH_LVGL                   //To use LVGL, you need to enable the macro LVGL
 
-
-
-
 #include <LilyGoWatch.h>
-
 
 // Personal Configuration
 
-#define SLEEP_TIMER 20			//comment to enable Sleep after 20s
-#define DIGITAL_1				//comment to enable Digital Watchface
-#define ANALOG_1				//comment to enable Analog Watchface
+#define SLEEP_TIMER 20			//comment to disenable Sleep after 20s
+#define DIGITAL_1				//comment to disenable Digital Watchface
+#define ANALOG_1				//comment to disenable Analog Watchface
+#define BAT_LEVL				//comment to disenable Battery Level Gauge
