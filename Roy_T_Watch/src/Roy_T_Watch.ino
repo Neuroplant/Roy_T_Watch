@@ -3,16 +3,16 @@
  * Written by lewishe
  * */
 #include "config.h"
-#include "background.h"
-#include "LCDFace.h"
 
 #define LV_COLOR_LCD_BG_BL_ON LV_COLOR_MAKE(0xA8, 0xC6, 0x4E)
 #define LV_COLOR_LCD_BG_BL_OFF LV_COLOR_MAKE(0x3C, 0x41, 0x2C)
 #define LV_COLOR_LCD_SEG_ON LV_COLOR_MAKE(0xF0, 0xFA, 0xF0)
-#define LV_COLOR_LCD_SEG_OFF LV_COLOR_MAKE(0xFF, 0xFF, 0xFF) //Better use OPA_1
-#define LV_COLOR_LCD_SEG_SHAD LV_COLOR_MAKE(0xFF, 0xFF, 0xFF) //Better use OPA_5
+#define LV_COLOR_LCD_SEG_OFF LV_COLOR_MAKE(0xFF, 0xFF, 0xFF) //Better use OPA_10
+#define LV_COLOR_LCD_SEG_SHAD LV_COLOR_MAKE(0xFF, 0xFF, 0xFF) //Better use OPA_50
+
 #define LV_COLOR_PHOSPHOR LV_COLOR_MAKE(0x88, 0xFF, 0x88) 
-int Angel_S, Angel_M, Angel_H;
+
+#ifdef DIGITAL_1
 typedef struct {
     lv_obj_t *hour;
     lv_obj_t *minute;
@@ -21,16 +21,20 @@ typedef struct {
     lv_obj_t *month;
     lv_obj_t *year;
 } str_datetime_t;
-
-
 static str_datetime_t g_data, g_data_shadow;
+#endif //DIGITAL_1
 
-int Sleeptimer_End, Sleeptimer_Now;
 
 TTGOClass *watch = nullptr;
 PCF8563_Class *rtc;
+
+#ifdef SLEEP_TIMER
+int Angel_S, Angel_M, Angel_H;
+int Sleeptimer_End, Sleeptimer_Now;
 AXP20X_Class *power;
 BMA *sensor;
+#endif
+
 
 void setup()
 {
@@ -49,7 +53,7 @@ void setup()
     //Lower the brightness
     watch->bl->adjust(150);
 
-    //Receive objects for easy writing
+#ifdef SLEEP_TIMER
     power = watch->power;
     sensor = watch->bma;
 
@@ -70,6 +74,7 @@ void setup()
     sensor->enableTiltInterrupt();
     // It corresponds to isDoubleClick interrupt
     sensor->enableWakeupInterrupt();
+#endif //SLEEP_TIMER
 
 
     lv_obj_t *img1 = lv_img_create(lv_scr_act(), NULL);
@@ -84,8 +89,7 @@ void setup()
     lv_obj_add_style(img1,LV_STATE_DEFAULT ,&bg_style);
     lv_obj_move_background(img1);
 
-// LCDFace
- //   LV_FONT_DECLARE(digital_7_64p);
+#ifdef DIGITAL_1
     LV_FONT_DECLARE(Matrix_Dot_64p);
     static lv_style_t style, style_shadow;
     lv_style_init(&style);
@@ -149,8 +153,11 @@ void setup()
     g_data.year = lv_label_create(img1, nullptr);
     lv_obj_add_style(g_data.year, LV_OBJ_PART_MAIN, &style);
     lv_label_set_text(g_data.year, ".8888");
-    lv_obj_align(g_data.year, img1, LV_ALIGN_IN_LEFT_MID, 125, 20);    
+    lv_obj_align(g_data.year, img1, LV_ALIGN_IN_LEFT_MID, 125, 20); 
 
+#endif // DIGITAL_1
+	
+#ifdef ANALOG_1
 // Watchface
 
     static lv_obj_t *Second_Hand_s = lv_img_create(img1, NULL);
@@ -161,9 +168,7 @@ void setup()
     static lv_obj_t *Minute_Hand = lv_img_create(img1, NULL);
     static lv_obj_t *Second_Hand = lv_img_create(img1, NULL);
 
-
-
-// Dial to do..maybe
+// Dial   to do..maybe
 
 // HourHand
     LV_IMG_DECLARE(Hour_Hand_C);
@@ -171,7 +176,7 @@ void setup()
     lv_img_set_antialias(Hour_Hand,true);
     lv_img_set_pivot(Hour_Hand,20,5);
     lv_obj_align(Hour_Hand, img1, LV_ALIGN_IN_TOP_LEFT, 100, 120);
-    lv_img_set_angle(Hour_Hand,0);
+    lv_img_set_angle(Hour_Hand,3300);
 // MinuteHand
     LV_IMG_DECLARE(Minute_Hand_C);
     lv_img_set_src(Minute_Hand, &Minute_Hand_C);
@@ -179,16 +184,15 @@ void setup()
     lv_img_set_pivot(Minute_Hand,20,5);
     lv_img_set_antialias(Minute_Hand,true);
     lv_obj_align(Minute_Hand, img1,  LV_ALIGN_IN_TOP_LEFT, 100, 120);
-    lv_img_set_angle(Minute_Hand,900);
+    lv_img_set_angle(Minute_Hand,2100);
 // SecondHand
     LV_IMG_DECLARE(Second_Hand_C);
     lv_img_set_src(Second_Hand, &Second_Hand_C);
     lv_img_set_antialias(Second_Hand,true);
     lv_img_set_pivot(Second_Hand,20,5);
     lv_obj_align(Second_Hand, img1,  LV_ALIGN_IN_TOP_LEFT, 100, 120);
-    lv_img_set_angle(Second_Hand,0);
+    lv_img_set_angle(Second_Hand,900);
 
-   
 ///HandShadow
 // HourHand
     LV_IMG_DECLARE(Hour_Hand_S);
@@ -196,7 +200,7 @@ void setup()
     lv_img_set_antialias(Hour_Hand_s,true);
     lv_img_set_pivot(Hour_Hand_s,20,6);
     lv_obj_align(Hour_Hand_s, img1, LV_ALIGN_IN_TOP_LEFT, 105, 125);
-    lv_img_set_angle(Hour_Hand_s,0);
+    lv_img_set_angle(Hour_Hand_s,3300);
 // MinuteHand
     LV_IMG_DECLARE(Minute_Hand_S);
     lv_img_set_src(Minute_Hand_s, &Minute_Hand_S);
@@ -204,48 +208,48 @@ void setup()
     lv_img_set_pivot(Minute_Hand_s,20,6);
     lv_img_set_antialias(Minute_Hand_s,true);
     lv_obj_align(Minute_Hand_s, img1,  LV_ALIGN_IN_TOP_LEFT, 105, 125);
-    lv_img_set_angle(Minute_Hand_s,900);
+    lv_img_set_angle(Minute_Hand_s,2100);
 // SecondHand
     LV_IMG_DECLARE(Second_Hand_S);
     lv_img_set_src(Second_Hand_s, &Second_Hand_S);
     lv_img_set_antialias(Second_Hand_s,true);
     lv_img_set_pivot(Second_Hand_s,20,6);
-        static lv_style_t hand_style;
-
-        lv_style_set_image_recolor(&hand_style, LV_OBJ_PART_MAIN, LV_COLOR_BLACK);
-
     lv_obj_align(Second_Hand_s, img1,  LV_ALIGN_IN_TOP_LEFT, 105, 125);
-    lv_img_set_angle(Second_Hand_s,0);
+    lv_img_set_angle(Second_Hand_s,900);
+	
+// Normal Style
+    static lv_style_t hand_style;
+	lv_style_set_image_recolor(&hand_style, LV_OBJ_PART_MAIN, LV_COLOR_BLACK);
 
-    static lv_style_t hand_s_style;
-
-    lv_style_set_image_opa(&hand_s_style, LV_STATE_DEFAULT, LV_OPA_80);
+    lv_obj_add_style(Second_Hand,LV_OBJ_PART_MAIN ,&hand_style);
+    lv_obj_add_style(Hour_Hand,LV_OBJ_PART_MAIN ,&hand_style);
+    lv_obj_add_style(Minute_Hand,LV_OBJ_PART_MAIN ,&hand_style);
+	
+// Shadow Style
+   static lv_style_t hand_s_style;
+    lv_style_set_image_opa(&hand_s_style, LV_STATE_DEFAULT, LV_OPA_20);
     lv_style_set_image_recolor(&hand_s_style, LV_STATE_DEFAULT, LV_COLOR_BLACK);
 
     lv_obj_add_style(Second_Hand_s,LV_OBJ_PART_MAIN ,&hand_s_style);
     lv_obj_add_style(Hour_Hand_s,LV_OBJ_PART_MAIN ,&hand_s_style);
     lv_obj_add_style(Minute_Hand_s,LV_OBJ_PART_MAIN ,&hand_s_style);
-//
+	
+#endif //ANALOG_1
+
     lv_task_create([](lv_task_t *t) 
     {
-            RTC_Date curr_datetime = rtc->getDateTime();
-              
-    Angel_S = (int) curr_datetime.second;
-    Angel_M = (int) curr_datetime.minute;
-    Angel_H = (int) curr_datetime.hour;
+    RTC_Date curr_datetime = rtc->getDateTime();
+    
+#ifdef ANALOG_1	
+    Angel_S = ((int) curr_datetime.second 	*60) 	+ 2700;
+    Angel_M = ((int) curr_datetime.minute	*60) 	+ 2700;
+    Angel_H = ((int) curr_datetime.hour		*300)	+ ((int) curr_datetime.minute	*5)	+ 2700;
 
-    Angel_S = Angel_S * 60;
-    Angel_M = Angel_M * 60;
-    Angel_H = (Angel_H * 5) *60;
+    while (Angel_S >= 3600) Angel_S = Angel_S - 3600;
+    while (Angel_M >= 3600) Angel_M = Angel_M - 3600;
+    while (Angel_H >= 3600) Angel_H = Angel_H - 3600;
 
-    Angel_S = Angel_S + 2700;
-    Angel_M = Angel_M + 2700;
-    Angel_H = Angel_H + 2700;
-
-    if (Angel_S >= 3600) Angel_S = Angel_S - 3600;
-    if (Angel_M >= 3600) Angel_M = Angel_M - 3600;
-    if (Angel_H >= 3600) Angel_H = Angel_H- 3600;
-
+	//Normal
     lv_img_set_angle(Second_Hand,Angel_S);
     lv_img_set_angle(Minute_Hand,Angel_M);
     lv_img_set_angle(Hour_Hand,Angel_H);
@@ -254,6 +258,9 @@ void setup()
     lv_img_set_angle(Second_Hand_s,Angel_S);
     lv_img_set_angle(Minute_Hand_s,Angel_M);
     lv_img_set_angle(Hour_Hand_s,Angel_H);
+	
+#endif //ANALOG_1
+#ifdef DIGITAL_1
 
     lv_label_set_text_fmt(g_data.second, "%02u", curr_datetime.second);
     lv_label_set_text_fmt(g_data.minute, "%02u", curr_datetime.minute);
@@ -261,19 +268,26 @@ void setup()
     lv_label_set_text_fmt(g_data.day, "%02u", curr_datetime.day);
     lv_label_set_text_fmt(g_data.month, "%02u", curr_datetime.month);
     lv_label_set_text_fmt(g_data.year, "%02u", curr_datetime.year);
+#endif //DIGITAL_1
     }, 999, LV_TASK_PRIO_MID, nullptr);
 
     // Set 20MHz operating speed to reduce power consumption
     setCpuFrequencyMhz(20);
+#ifdef SLEEP_TIMER
 
     RTC_Date SleepTimer = rtc->getDateTime();
-    Sleeptimer_End = (int)20+(SleepTimer.second)+(SleepTimer.minute*60)+(SleepTimer.hour*360);
-     
+    Sleeptimer_End = (int)SLEEP_TIMER+(SleepTimer.second)+(SleepTimer.minute*60)+(SleepTimer.hour*360);
+#endif //SLEEP_TIMER
+   
     }
+
 
 void loop()
 {
     lv_task_handler();
+	
+#ifdef SLEEP_TIMER
+	
     RTC_Date Timer = rtc->getDateTime();
         Sleeptimer_Now = (int)Timer.second+(Timer.minute*60)+(Timer.hour*360);
 
@@ -283,4 +297,5 @@ void loop()
         esp_sleep_enable_ext1_wakeup(GPIO_SEL_39, ESP_EXT1_WAKEUP_ANY_HIGH);
         esp_deep_sleep_start();
     }
+#endif //SLEEP_TIMER
 }
