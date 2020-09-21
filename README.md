@@ -1,5 +1,7 @@
 # Roy_T_Watch
- Lilygo TTGO T-Watch 2020
+ Lilygo TTGO T-Watch 2020 
+ 
+ based on the exemples in TTGO_TWatch_Library
 
 # Features
 - Analoganzeige
