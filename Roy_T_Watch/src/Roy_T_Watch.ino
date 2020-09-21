@@ -33,7 +33,11 @@ int Angel_S, Angel_M, Angel_H;
 int Sleeptimer_End, Sleeptimer_Now;
 AXP20X_Class *power;
 BMA *sensor;
-#endif
+#endif //SLEEP_TIMER
+
+#ifdef BAT_LVL
+int BatLvl;
+#endif //BAT_LVL
 
 
 void setup()
@@ -52,6 +56,9 @@ void setup()
 
     //Lower the brightness
     watch->bl->adjust(150);
+
+
+	
 
 #ifdef SLEEP_TIMER
     power = watch->power;
@@ -236,6 +243,17 @@ void setup()
 	
 #endif //ANALOG_1
 
+#ifdef BAT_LVL
+	lv_obj_t *BatGauge = lv_gauge_create(img1, NULL);
+	lv_gauge_set_needle_count(&BatGauge, 1, LV_COLOR_BLACK);
+	static lv_style_t BatGauge_Style;
+	lv_style_set_bg_opa(&BatGauge_Style, LV_STATE_DEFAULT,LV_OPA_TRANSPERENT)
+	lv_gauge_set_value(BatGauge,1,50);
+	lv_obj_set_size(BatGauge, 20, 20);
+    lv_obj_align(BatGauge, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 0);
+
+#endif //BAT_LVL	
+
     lv_task_create([](lv_task_t *t) 
     {
     RTC_Date curr_datetime = rtc->getDateTime();
@@ -269,7 +287,11 @@ void setup()
     lv_label_set_text_fmt(g_data.month, "%02u", curr_datetime.month);
     lv_label_set_text_fmt(g_data.year, "%02u", curr_datetime.year);
 #endif //DIGITAL_1
-    }, 999, LV_TASK_PRIO_MID, nullptr);
+#ifdef BAT_LVL
+	lv_gauge_set_value(BatGauge,1,(int)(100-BatLvl));
+#endif //BAT_LVL
+
+	}, 999, LV_TASK_PRIO_MID, nullptr);
 
     // Set 20MHz operating speed to reduce power consumption
     setCpuFrequencyMhz(20);
