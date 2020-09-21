@@ -12,5 +12,6 @@
 - Create better Hands
 # ToDo n´Next
 - Create Release V0.01
+- Show Akku-Info
 - BLE integration
 - Notification integrateion
