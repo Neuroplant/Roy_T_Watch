@@ -98,6 +98,18 @@ void setup()
     lv_obj_add_style(img1,LV_STATE_DEFAULT ,&bg_style);
     lv_obj_move_background(img1);
 
+#ifdef BAT_LVL
+	static lv_obj_t *BatGauge = lv_gauge_create(img1, NULL);
+    static lv_color_t needle_colors[1];
+     needle_colors[0] = LV_COLOR_BLACK;
+     	lv_gauge_set_needle_count(BatGauge, 1, needle_colors);
+	static lv_style_t BatGauge_Style;
+	lv_style_set_bg_opa(&BatGauge_Style, LV_STATE_DEFAULT,LV_OPA_TRANSP);
+	lv_gauge_set_value(BatGauge,1,50);
+	lv_obj_set_size(BatGauge, 50, 50);
+    lv_obj_align(BatGauge, NULL, LV_ALIGN_IN_TOP_LEFT, 5, 5);
+#endif //BAT_LVL
+
 #ifdef DIGITAL_1
     LV_FONT_DECLARE(Matrix_Dot_64p);
     static lv_style_t style, style_shadow;
@@ -232,8 +244,6 @@ void setup()
 // Shadow Style
    static lv_style_t hand_s_style;
     lv_style_set_image_opa(&hand_s_style, LV_STATE_DEFAULT, LV_OPA_20);
-    lv_style_set_image_recolor(&hand_s_style, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-
     lv_obj_add_style(Second_Hand_s,LV_OBJ_PART_MAIN ,&hand_s_style);
     lv_obj_add_style(Hour_Hand_s,LV_OBJ_PART_MAIN ,&hand_s_style);
     lv_obj_add_style(Minute_Hand_s,LV_OBJ_PART_MAIN ,&hand_s_style);
@@ -247,19 +257,7 @@ void setup()
 	
 #endif //ANALOG_1
 
-#ifdef BAT_LVL
-	lv_obj_t *BatGauge = lv_gauge_create(img1, NULL);
-    static lv_color_t needle_colors[1];
-     needle_colors[0] = LV_COLOR_BLACK;
-     	lv_gauge_set_needle_count(BatGauge, 1, needle_colors);
-	static lv_style_t BatGauge_Style;
-	lv_style_set_bg_opa(&BatGauge_Style, LV_STATE_DEFAULT,LV_OPA_TRANSP);
-	lv_gauge_set_value(BatGauge,1,50);
-	lv_obj_set_size(BatGauge, 20, 20);
-    lv_obj_align(BatGauge, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 0);
-
-
-#endif //BAT_LVL	
+	
 
     lv_task_create([](lv_task_t *t) 
     {
