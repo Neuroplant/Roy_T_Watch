@@ -104,9 +104,10 @@ void setup()
      needle_colors[0] = LV_COLOR_BLACK;
      	lv_gauge_set_needle_count(BatGauge, 1, needle_colors);
 	static lv_style_t BatGauge_Style;
-	lv_style_set_bg_opa(&BatGauge_Style, LV_STATE_DEFAULT,LV_OPA_TRANSP);
+	lv_style_set_bg_opa(&BatGauge_Style, LV_STATE_DEFAULT,LV_OPA_50);
+    lv_obj_add_style(BatGauge,LV_STATE_DEFAULT,&BatGauge_Style);
 	lv_gauge_set_value(BatGauge,1,50);
-	lv_obj_set_size(BatGauge, 50, 50);
+	lv_obj_set_size(BatGauge, 100, 100);
     lv_obj_align(BatGauge, NULL, LV_ALIGN_IN_TOP_LEFT, 5, 5);
 #endif //BAT_LVL
 
@@ -291,9 +292,10 @@ void setup()
     lv_label_set_text_fmt(g_data.day, "%02u", curr_datetime.day);
     lv_label_set_text_fmt(g_data.month, "%02u", curr_datetime.month);
     lv_label_set_text_fmt(g_data.year, "%02u", curr_datetime.year);
-#endif //DIGITAL_1
+#endif //DIGITAL_1  
 #ifdef BAT_LVL
-	lv_gauge_set_value(BatGauge,1,(int)(100-BatLvl));
+    BatLvl = watch->power->getBattPercentage();
+	lv_gauge_set_value(BatGauge,0,(int)(100-BatLvl));
 #endif //BAT_LVL
 
 	}, 999, LV_TASK_PRIO_MID, nullptr);
