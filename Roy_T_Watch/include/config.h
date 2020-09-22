@@ -19,3 +19,4 @@
 #define DIGITAL_1				//comment to disenable Digital Watchface
 #define ANALOG_1				//comment to disenable Analog Watchface
 #define BAT_LVL				//comment to disenable Battery Level Gauge
+#define TICKER
