@@ -27,9 +27,9 @@ static str_datetime_t g_data, g_data_shadow;
 
 TTGOClass *watch = nullptr;
 PCF8563_Class *rtc;
-int Angel_S, Angel_M, Angel_H;
 
 #ifdef SLEEP_TIMER
+int Angel_S, Angel_M, Angel_H;
 int Sleeptimer_End, Sleeptimer_Now;
 
 AXP20X_Class *power;
@@ -40,8 +40,6 @@ BMA *sensor;
 int BatLvl;
 
 #endif //BAT_LVL
-
-
 
 
 void setup()
@@ -76,18 +74,12 @@ void setup()
     cfg.perf_mode = BMA4_CONTINUOUS_MODE;
     sensor->accelConfig(cfg);
     sensor->enableAccel();
-        // Disable BMA423 isStepCounter feature
-    sensor->enableFeature(BMA423_STEP_CNTR, false);
     // Enable BMA423 isTilt feature
     sensor->enableFeature(BMA423_TILT, true);
     // Enable BMA423 isDoubleClick feature
     sensor->enableFeature(BMA423_WAKEUP, true);
-    // Reset steps
-    sensor->resetStepCounter();
-    
     // Turn off feature interrupt
     // sensor->enableStepCountInterrupt();
-    
     sensor->enableTiltInterrupt();
     // It corresponds to isDoubleClick interrupt
     sensor->enableWakeupInterrupt();
@@ -107,23 +99,21 @@ void setup()
     lv_obj_move_background(img1);
 
 #ifdef BAT_LVL
-	static lv_obj_t *BatBar = lv_bar_create(img1, NULL);
-    //  static lv_color_t needle_colors[1];
-    //  needle_colors[0] = LV_COLOR_BLACK;
-    //	lv_gauge_set_needle_count(BatGauge, 1, needle_colors);
-	static lv_style_t BatBar_Style;
-	lv_style_set_bg_opa(&BatBar_Style, LV_STATE_DEFAULT,LV_OPA_50);
-    lv_obj_add_style(BatBar,LV_STATE_DEFAULT,&BatBar_Style);
-    lv_bar_set_range(BatBar, 0, 100);
-    //lv_gauge_set_critical_value(BatGauge,20);
-	lv_bar_set_start_value(BatBar,0,LV_ANIM_ON);
-	lv_obj_set_size(BatBar, 100, 10);
-    lv_obj_align(BatBar, NULL, LV_ALIGN_IN_TOP_LEFT, 5, 5);
+	static lv_obj_t *BatGauge = lv_gauge_create(img1, NULL);
+    static lv_color_t needle_colors[1];
+     needle_colors[0] = LV_COLOR_BLACK;
+     	lv_gauge_set_needle_count(BatGauge, 1, needle_colors);
+	static lv_style_t BatGauge_Style;
+	lv_style_set_bg_opa(&BatGauge_Style, LV_STATE_DEFAULT,LV_OPA_50);
+    lv_obj_add_style(BatGauge,LV_STATE_DEFAULT,&BatGauge_Style);
+	lv_gauge_set_value(BatGauge,1,50);
+	lv_obj_set_size(BatGauge, 100, 100);
+    lv_obj_align(BatGauge, NULL, LV_ALIGN_IN_TOP_LEFT, 5, 5);
 #endif //BAT_LVL
 
 #ifdef DIGITAL_1
     LV_FONT_DECLARE(Matrix_Dot_64p);
-    static lv_style_t style, style_shadow, style_small;
+    static lv_style_t style, style_shadow;
     lv_style_init(&style);
     lv_style_init(&style_shadow);
 
@@ -134,7 +124,7 @@ void setup()
     lv_style_set_text_font(&style_shadow, LV_STATE_DEFAULT, &Matrix_Dot_64p);
 
     lv_style_set_text_opa(&style,LV_STATE_DEFAULT,LV_OPA_COVER);
-    lv_style_set_text_opa(&style_shadow,LV_STATE_DEFAULT,LV_OPA_80);
+    lv_style_set_text_opa(&style_shadow,LV_STATE_DEFAULT,LV_OPA_50);
 
     g_data_shadow.hour = lv_label_create(img1, nullptr);
     g_data.hour = lv_label_create(img1, nullptr);
@@ -188,22 +178,6 @@ void setup()
     lv_obj_align(g_data.year, img1, LV_ALIGN_IN_LEFT_MID, 125, 20); 
 
 #endif // DIGITAL_1
-
-#ifdef TICKER
-    LV_FONT_DECLARE(Ticker_Small_12p);
-
-    static lv_obj_t *Ticker = lv_label_create (img1,NULL);
-    lv_style_set_text_font(&style_small, LV_STATE_DEFAULT, &Ticker_Small_12p);
-    lv_style_set_text_color(&style_small,LV_STATE_DEFAULT,LV_COLOR_LIME);
-    lv_style_set_text_opa(&style_small,LV_STATE_DEFAULT,LV_OPA_COVER);
-    lv_label_set_long_mode(Ticker,LV_LABEL_LONG_SROLL_CIRC);
-    lv_obj_set_width(Ticker, 220);
-    lv_obj_add_style(Ticker, LV_OBJ_PART_MAIN, &style_small);
-    lv_label_set_text(Ticker,"12367890qwertzuiopasdfghjklyxcvbbnzrdzrd55dtumu6u");
-    lv_obj_align(Ticker, NULL, LV_ALIGN_IN_TOP_LEFT, 5, 180);
-
-
-#endif // TICKER
 	
 #ifdef ANALOG_1
 // Watchface
@@ -284,7 +258,8 @@ void setup()
 	
 #endif //ANALOG_1
 
-///////////////////////////////////////////////////////
+	
+
     lv_task_create([](lv_task_t *t) 
     {
     RTC_Date curr_datetime = rtc->getDateTime();
@@ -320,22 +295,11 @@ void setup()
 #endif //DIGITAL_1  
 #ifdef BAT_LVL
     BatLvl = watch->power->getBattPercentage();
-	lv_bar_set_value(BatBar,0,(int)(BatLvl));
+	lv_gauge_set_value(BatGauge,0,(int)(100-BatLvl));
 #endif //BAT_LVL
-//// Serial Output
-  Serial.print("Vbus: "); Serial.print((int)watch->power->getVbusVoltage()); Serial.println(" mV");
-  Serial.print("Vbus: "); Serial.print(watch->power->getVbusCurrent()); Serial.println(" mA");
-  Serial.print("BATT: "); Serial.print(watch->power->getBattVoltage()); Serial.println(" mV");
-  Serial.print("Per: "); Serial.print(watch->power->getBattPercentage()); Serial.println(" %");
-  Serial.println();
-    Serial.print("Time:"); Serial.print(curr_datetime.hour); Serial.print(":");Serial.print(curr_datetime.minute); Serial.print(":");Serial.print(curr_datetime.second); Serial.println();
-    Serial.println();
 
-////
+	}, 999, LV_TASK_PRIO_MID, nullptr);
 
-
-	}, 1000, LV_TASK_PRIO_MID, nullptr);
-/////////////////////////////////////////////////////////////
     // Set 20MHz operating speed to reduce power consumption
     setCpuFrequencyMhz(20);
 #ifdef SLEEP_TIMER
@@ -358,11 +322,7 @@ void loop()
 
     if (Sleeptimer_Now>=Sleeptimer_End) 
     {
-        Sleeptimer_End = Sleeptimer_End +60;
-        watch->displaySleep();
         watch->powerOff();
-    // LDO2 is used to power the display, and LDO2 can be turned off if needed
-    // power->setPowerOutPut(AXP202_LDO2, false);
         esp_sleep_enable_ext1_wakeup(GPIO_SEL_39, ESP_EXT1_WAKEUP_ANY_HIGH);
         esp_deep_sleep_start();
     }
