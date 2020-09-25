@@ -30,6 +30,8 @@ Habe jetzt umgestellt aud Visual Studio Community und jetzt ist der Code auch wi
 -   Fotos und Video der Features
 -   upload der Resourcen (Fonts, Images)
 ```
+# English version 
+(for those who can not use translate.google.com)
 
 I wish you a lot of fun with the LiLyGo T-Watch 2020 Here you can see what I do with mine. My skills in C / C ++ are rather modest, but thanks to this watch, they are increasing step by step.
 
@@ -40,18 +42,16 @@ I have now switched to the Visual Studio Community and now the code is compatibl
 
 # Features
 
-``
 - Features can be switched on and off in the Config.ini
 - Digit display (time and date)
 - Analog display (openwork hands, shadows)
 - Powersave
 - Ticker (status displays)
 ✌
-``
+
 
 # To do
 
-``
 - Notifications (Gadgedbridge seems suitable)
 - BLE
 - wifi
@@ -60,4 +60,3 @@ I have now switched to the Visual Studio Community and now the code is compatibl
 - Delay standby if there is any interaction with the watch
 - Photos and video of the features
 - upload of resources (fonts, images)
-``
