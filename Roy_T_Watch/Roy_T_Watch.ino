@@ -90,12 +90,13 @@ void setup()
 
     lv_obj_t *img1 = lv_img_create(lv_scr_act(), NULL);
 //Background
-    LV_IMG_DECLARE(Logo_lvgl);
-    lv_img_set_src(img1, &Logo_lvgl);
+#ifdef BACKGROUND_PIC
+    LV_IMG_DECLARE(BACKGROUND_PIC);
+    lv_img_set_src(img1, &BACKGROUND_PIC);
+#endif //BACKGROUND_PIC
     lv_obj_align(img1, NULL, LV_ALIGN_CENTER, 0, 0);
     static lv_style_t bg_style;
     lv_style_set_bg_color(&bg_style, LV_STATE_DEFAULT, LV_COLOR_LCD_BG_BL_ON);
-    lv_style_set_bg_opa(&bg_style,LV_STATE_DEFAULT,LV_OPA_50);
     lv_obj_add_style(img1,LV_STATE_DEFAULT ,&bg_style);
     lv_obj_move_background(img1);
 
