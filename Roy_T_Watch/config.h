@@ -20,3 +20,4 @@
 #define ANALOG_1				// Analog Watchface
 #define BAT_LVL				    // Battery Level Bar
 #define TICKER                // Ticker will be used for Notifications etc. in a later Version
+#define BACKGROUND_PIC  Logo_lvgl    //Background picture e.g. "Logo_lvgl.c" (see https://lvgl.io/tools/imageconverter , Image size 240x240)
