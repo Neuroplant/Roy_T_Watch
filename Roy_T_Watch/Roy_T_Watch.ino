@@ -6,11 +6,11 @@
 #include <iostream>
 #include <string>
 
-#define LV_COLOR_LCD_BG_BL_ON LV_COLOR_MAKE(0xA8, 0xC6, 0x4E)
-#define LV_COLOR_LCD_BG_BL_OFF LV_COLOR_MAKE(0x3C, 0x41, 0x2C)
-#define LV_COLOR_LCD_SEG_ON LV_COLOR_MAKE(0xF0, 0xFA, 0xF0)
-#define LV_COLOR_LCD_SEG_OFF LV_COLOR_MAKE(0xFF, 0xFF, 0xFF) //Better use OPA_10
-#define LV_COLOR_LCD_SEG_SHAD LV_COLOR_MAKE(0xFF, 0xFF, 0xFF) //Better use OPA_50
+#define LV_COLOR_LCD_BG_BL_ON LV_COLOR_MAKE(0xA8, 0xC6, 0x4E)   //Old Style LCD Simulation Background /Light off
+#define LV_COLOR_LCD_BG_BL_OFF LV_COLOR_MAKE(0x3C, 0x41, 0x2C)  //Old Style LCD Simulation Background /Light off
+#define LV_COLOR_LCD_SEG_ON LV_COLOR_MAKE(0xF0, 0xFA, 0xF0)     //Old Style LCD Simulation Segment on
+#define LV_COLOR_LCD_SEG_OFF LV_COLOR_MAKE(0xFF, 0xFF, 0xFF)    //Old Style LCD Simulation Segment off/Light off/Better use OPA_10
+#define LV_COLOR_LCD_SEG_SHAD LV_COLOR_MAKE(0xFF, 0xFF, 0xFF)   //Old Style LCD Simulation Segment Shadow (only if Light on)/Better use OPA_50
 
 #define LV_COLOR_PHOSPHOR LV_COLOR_MAKE(0x88, 0xFF, 0x88) 
 
@@ -90,23 +90,25 @@ void setup()
 
     lv_obj_t *img1 = lv_img_create(lv_scr_act(), NULL);
 //Background
-#ifdef BACKGROUND_PIC
     LV_IMG_DECLARE(BACKGROUND_PIC);
     lv_img_set_src(img1, &BACKGROUND_PIC);
-#endif //BACKGROUND_PIC
     lv_obj_align(img1, NULL, LV_ALIGN_CENTER, 0, 0);
     static lv_style_t bg_style;
     lv_style_set_bg_color(&bg_style, LV_STATE_DEFAULT, LV_COLOR_LCD_BG_BL_ON);
+    lv_style_set_bg_opa(&bg_style,LV_STATE_DEFAULT,LV_OPA_50);
     lv_obj_add_style(img1,LV_STATE_DEFAULT ,&bg_style);
     lv_obj_move_background(img1);
 
 #ifdef BAT_LVL
 	static lv_obj_t *BatBar = lv_bar_create(img1, NULL);
-	static lv_style_t BatBar_Style;
-	lv_style_set_bg_opa(&BatBar_Style, LV_STATE_DEFAULT,LV_OPA_50);
-    lv_obj_add_style(BatBar, LV_BAR_PART_BG,&BatBar_Style);
+    static lv_style_t BatBar_Style, BatBar_V_Style;
+    lv_style_set_bg_opa(&BatBar_Style, LV_STATE_DEFAULT, LV_OPA_50);
+    lv_style_set_bg_color(&BatBar_Style, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    lv_style_set_bg_opa(&BatBar_V_Style, LV_STATE_DEFAULT, LV_OPA_0);
+    lv_style_set_bg_color(&BatBar_V_Style, LV_STATE_DEFAULT, LV_COLOR_BLUE);
+    lv_obj_add_style(BatBar, LV_BAR_PART_BG, &BatBar_Style);
+    lv_obj_add_style(BatBar, LV_BAR_PART_INDIC, &BatBar_V_Style);
     lv_bar_set_range(BatBar, 0, 100);
-    //lv_gauge_set_critical_value(BatGauge,20);
 	lv_bar_set_start_value(BatBar,0,LV_ANIM_ON);
 	lv_obj_set_size(BatBar, 100, 10);
     lv_obj_align(BatBar, NULL, LV_ALIGN_IN_TOP_LEFT, 5, 15);
@@ -213,7 +215,6 @@ void setup()
 	
 #ifdef ANALOG_1
 // Watchface
-
     static lv_obj_t *Second_Hand_s = lv_img_create(img1, NULL);
     static lv_obj_t *Minute_Hand_s = lv_img_create(img1, NULL);
     static lv_obj_t *Hour_Hand_s = lv_img_create(img1, NULL);
@@ -231,7 +232,7 @@ void setup()
     lv_img_set_src(Hour_Hand_s, &HourHand_S);
     lv_img_set_antialias(Hour_Hand_s,true);
     lv_img_set_pivot(Hour_Hand_s,20,5);
-    lv_obj_align(Hour_Hand_s, img1, LV_ALIGN_IN_TOP_LEFT, 105, 127);
+    lv_obj_align(Hour_Hand_s, img1, LV_ALIGN_IN_TOP_LEFT, 105, 130);
     lv_img_set_angle(Hour_Hand_s,3300);
 // MinuteHand
     LV_IMG_DECLARE(MinuteHand_S);
@@ -239,14 +240,14 @@ void setup()
     lv_img_set_antialias(Minute_Hand_s,true);
     lv_img_set_pivot(Minute_Hand_s,20,5);
     lv_img_set_antialias(Minute_Hand_s,true);
-    lv_obj_align(Minute_Hand_s, img1,  LV_ALIGN_IN_TOP_LEFT, 105, 127);
+    lv_obj_align(Minute_Hand_s, img1,  LV_ALIGN_IN_TOP_LEFT, 105, 130);
     lv_img_set_angle(Minute_Hand_s,2100);
 // SecondHand
     LV_IMG_DECLARE(SecondHand_S);
     lv_img_set_src(Second_Hand_s, &SecondHand_S);
     lv_img_set_antialias(Second_Hand_s,true);
     lv_img_set_pivot(Second_Hand_s,20,5);
-    lv_obj_align(Second_Hand_s, img1,  LV_ALIGN_IN_TOP_LEFT, 105, 127);
+    lv_obj_align(Second_Hand_s, img1,  LV_ALIGN_IN_TOP_LEFT, 105, 130);
     lv_img_set_angle(Second_Hand_s,900);
 
 // Normal Hand
@@ -276,7 +277,7 @@ void setup()
 	
 // Shadow Style
   static lv_style_t hand_s_style;
-    lv_style_set_image_opa(&hand_s_style, LV_STATE_DEFAULT, LV_OPA_70);
+    lv_style_set_image_opa(&hand_s_style, LV_STATE_DEFAULT, LV_OPA_20);
     lv_obj_add_style(Second_Hand_s,LV_OBJ_PART_MAIN ,&hand_s_style);
     lv_obj_add_style(Hour_Hand_s,LV_OBJ_PART_MAIN ,&hand_s_style);
     lv_obj_add_style(Minute_Hand_s,LV_OBJ_PART_MAIN ,&hand_s_style);
@@ -325,6 +326,7 @@ void setup()
 #endif //DIGITAL_1  
 #ifdef BAT_LVL
     BatLvl = watch->power->getBattPercentage();
+    if (BatLvl <= 20)     lv_style_set_bg_color(&BatBar_V_Style, LV_STATE_DEFAULT, LV_COLOR_RED);
 	lv_bar_set_value(BatBar,0,(uint16_t)(BatLvl));
 #endif //BAT_LVL
 #ifdef TICKER
@@ -332,7 +334,7 @@ void setup()
 #endif //TICKER
 #ifdef SERIAL_OUT
   Serial.print("Vbus: "); Serial.print(watch->power->getVbusVoltage()); Serial.println(" mV");
-  Serial.print("Vbus: "); Serial.print(watch->power->getBattCurrent()); Serial.println(" mA");
+  Serial.print("Vbus: "); Serial.print(watch->power->getVbusCurrent()); Serial.println(" mA");
   Serial.print("BATT: "); Serial.print(watch->power->getBattVoltage()); Serial.println(" mV");
   Serial.print("Per:  "); Serial.print(watch->power->getBattPercentage()); Serial.println(" %");
   Serial.println();
