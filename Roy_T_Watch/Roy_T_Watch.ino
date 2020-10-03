@@ -103,19 +103,43 @@ void setup()
     sensor->enableWakeupInterrupt();
 #endif //SLEEP_TIMER
 
-    lv_obj_t *img1 = lv_img_create(lv_scr_act(), NULL);
-//Background
+    static lv_point_t valid_pos[] = { {0,0}, {1, 0} };
+    lv_obj_t* tileview;
+    tileview = lv_tileview_create(lv_scr_act(), NULL);
+    lv_tileview_set_valid_positions(tileview, valid_pos, 2);
+    lv_tileview_set_edge_flash(tileview, true);
+
+    lv_obj_t* tile1 = lv_obj_create(tileview, NULL);
+    lv_obj_set_size(tile1, LV_HOR_RES, LV_VER_RES);
+    lv_tileview_add_element(tileview, tile1);
+
+    lv_obj_t* tile2 = lv_obj_create(tileview, tile1);
+    lv_obj_set_pos(tile2, LV_HOR_RES, 0);
+    lv_tileview_add_element(tileview, tile2);
+
+
+
+    lv_obj_t* img1 = lv_img_create(tile1, NULL);
+    lv_obj_t* img2 = lv_img_create(tile2, NULL);
+ //Background
     LV_IMG_DECLARE(BACKGROUND_PIC);
     lv_img_set_src(img1, &BACKGROUND_PIC);
     lv_obj_align(img1, NULL, LV_ALIGN_CENTER, 0, 0);
     static lv_style_t bg_style;
     lv_style_set_bg_color(&bg_style, LV_STATE_DEFAULT, LV_COLOR_LCD_BG_BL_ON);
-    lv_style_set_bg_opa(&bg_style,LV_STATE_DEFAULT,LV_OPA_50);
-    lv_obj_add_style(img1,LV_STATE_DEFAULT ,&bg_style);
-    lv_obj_move_background(img1);
+    lv_style_set_bg_opa(&bg_style, LV_STATE_DEFAULT, LV_OPA_50);
+    lv_obj_add_style(img1, LV_STATE_DEFAULT, &bg_style);
+
+    LV_IMG_DECLARE(BACKGROUND_PIC2);
+    lv_img_set_src(img2, &BACKGROUND_PIC2);
+    lv_obj_align(img2, NULL, LV_ALIGN_CENTER, 0, 0);
+    static lv_style_t bg_style2;
+    lv_style_set_bg_color(&bg_style2, LV_STATE_DEFAULT, LV_COLOR_LCD_BG_BL_ON);
+    lv_style_set_bg_opa(&bg_style2, LV_STATE_DEFAULT, LV_OPA_50);
+    lv_obj_add_style(img2, LV_STATE_DEFAULT, &bg_style2);
 
 #ifdef BAT_LVL
-	static lv_obj_t *BatBar = lv_bar_create(img1, NULL);
+	static lv_obj_t *BatBar = lv_bar_create(img2, NULL);
     static lv_style_t BatBar_Style, BatBar_V_Style;
     lv_style_set_bg_opa(&BatBar_Style, LV_STATE_DEFAULT, LV_OPA_50);
     lv_style_set_bg_color(&BatBar_Style, LV_STATE_DEFAULT, LV_COLOR_BLACK);
@@ -196,7 +220,7 @@ void setup()
     lv_obj_add_style(DData.stat2, LV_OBJ_PART_MAIN, &style_D2);
     lv_obj_add_style(DData.stat3, LV_OBJ_PART_MAIN, &style_D2);
     lv_obj_add_style(DData.stat4, LV_OBJ_PART_MAIN, &style_D2);
-
+    /*
     lv_label_set_text(DDataS.hourmin, "~~:~~");
     //lv_label_set_text(DDataS.second, "~~");
     lv_label_set_text(DDataS.day, "~~.");
@@ -216,7 +240,7 @@ void setup()
     lv_label_set_text(DData.stat2, "~.~~V");
     lv_label_set_text(DData.stat3, "~.~~h");
     lv_label_set_text(DData.stat4, "~.~~s");
-
+    **/
     lv_obj_align(DDataS.hourmin, img1, LV_ALIGN_IN_TOP_LEFT, 9, 14);
    // lv_obj_align(DDataS.second, img1, LV_ALIGN_IN_TOP_LEFT, 204, 14);
     lv_obj_align(DDataS.day, img1, LV_ALIGN_IN_TOP_LEFT, 9, 80);
@@ -273,13 +297,13 @@ void setup()
 	
 #ifdef ANALOG_1
 // Watchface
-    static lv_obj_t *Second_Hand_s = lv_img_create(img1, NULL);
-    static lv_obj_t *Minute_Hand_s = lv_img_create(img1, NULL);
-    static lv_obj_t *Hour_Hand_s = lv_img_create(img1, NULL);
+    static lv_obj_t *Second_Hand_s = lv_img_create(img2, NULL);
+    static lv_obj_t *Minute_Hand_s = lv_img_create(img2, NULL);
+    static lv_obj_t *Hour_Hand_s = lv_img_create(img2, NULL);
     
-    static lv_obj_t *Hour_Hand = lv_img_create(img1, NULL);
-    static lv_obj_t *Minute_Hand = lv_img_create(img1, NULL);
-    static lv_obj_t *Second_Hand = lv_img_create(img1, NULL);
+    static lv_obj_t *Hour_Hand = lv_img_create(img2, NULL);
+    static lv_obj_t *Minute_Hand = lv_img_create(img2, NULL);
+    static lv_obj_t *Second_Hand = lv_img_create(img2, NULL);
 
 // Dial   to do..maybe
 
@@ -290,7 +314,7 @@ void setup()
     lv_img_set_src(Hour_Hand_s, &HourHand_S);
     lv_img_set_antialias(Hour_Hand_s,true);
     lv_img_set_pivot(Hour_Hand_s,20,8);
-    lv_obj_align(Hour_Hand_s, img1, LV_ALIGN_IN_TOP_LEFT, 105, 130);
+    lv_obj_align(Hour_Hand_s, img2, LV_ALIGN_IN_TOP_LEFT, 105, 130);
     lv_img_set_angle(Hour_Hand_s,3300);
 // MinuteHand
     LV_IMG_DECLARE(MinuteHand_S);
@@ -298,14 +322,14 @@ void setup()
     lv_img_set_antialias(Minute_Hand_s,true);
     lv_img_set_pivot(Minute_Hand_s,20,8);
     lv_img_set_antialias(Minute_Hand_s,true);
-    lv_obj_align(Minute_Hand_s, img1,  LV_ALIGN_IN_TOP_LEFT, 105, 130);
+    lv_obj_align(Minute_Hand_s, img2,  LV_ALIGN_IN_TOP_LEFT, 105, 130);
     lv_img_set_angle(Minute_Hand_s,2100);
 // SecondHand
     LV_IMG_DECLARE(SecondHand_S);
     lv_img_set_src(Second_Hand_s, &SecondHand_S);
     lv_img_set_antialias(Second_Hand_s,true);
     lv_img_set_pivot(Second_Hand_s,20,8);
-    lv_obj_align(Second_Hand_s, img1,  LV_ALIGN_IN_TOP_LEFT, 105, 130);
+    lv_obj_align(Second_Hand_s, img2,  LV_ALIGN_IN_TOP_LEFT, 105, 130);
     lv_img_set_angle(Second_Hand_s,900);
 
 // Normal Hand
@@ -315,7 +339,7 @@ void setup()
     lv_img_set_src(Hour_Hand, &HourHand);
     lv_img_set_antialias(Hour_Hand,true);
     lv_img_set_pivot(Hour_Hand,20,8);
-    lv_obj_align(Hour_Hand, img1, LV_ALIGN_IN_TOP_LEFT, 100, 120);
+    lv_obj_align(Hour_Hand, img2, LV_ALIGN_IN_TOP_LEFT, 100, 120);
     lv_img_set_angle(Hour_Hand,3300);
 // MinuteHand
     LV_IMG_DECLARE(MinuteHand);
@@ -323,14 +347,14 @@ void setup()
     lv_img_set_antialias(Minute_Hand,true);
     lv_img_set_pivot(Minute_Hand,20,8);
     lv_img_set_antialias(Minute_Hand,true);
-    lv_obj_align(Minute_Hand, img1,  LV_ALIGN_IN_TOP_LEFT, 100, 120);
+    lv_obj_align(Minute_Hand, img2,  LV_ALIGN_IN_TOP_LEFT, 100, 120);
     lv_img_set_angle(Minute_Hand,2100);
 // SecondHand
     LV_IMG_DECLARE(SecondHand);
     lv_img_set_src(Second_Hand, &SecondHand);
     lv_img_set_antialias(Second_Hand,true);
     lv_img_set_pivot(Second_Hand,20,8);
-    lv_obj_align(Second_Hand, img1,  LV_ALIGN_IN_TOP_LEFT, 100, 120);
+    lv_obj_align(Second_Hand, img2,  LV_ALIGN_IN_TOP_LEFT, 100, 120);
     lv_img_set_angle(Second_Hand,900);
 	
 // Shadow Style
@@ -347,7 +371,7 @@ void setup()
     lv_obj_add_style(Minute_Hand,LV_OBJ_PART_MAIN ,&hand_style);
 	
 #endif //ANALOG_1
-
+   // lv_scr_load(img2);
 ///////////////////////////////////////////////////////
     lv_task_create([](lv_task_t *t) 
     {
@@ -436,7 +460,6 @@ void setup()
     RTC_Date SleepTimer = rtc->getDateTime();
     Sleeptimer_End = epoch_r(rtc->getDateTime()) + 60;
 #endif //SLEEP_TIMER
-    t = rtc->getDayOfWeek(curr_datetime);
     }
 
 

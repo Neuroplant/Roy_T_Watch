@@ -25,9 +25,10 @@
 //#define SERIAL_OUT 115200       // Serial output at 115288 Baud
 #define SLEEP_TIMER 20			// Sleep after 20s
 #define DIGITAL_1				// Digital Watchface
-//#define ANALOG_1				// Analog Watchface
+#define ANALOG_1				// Analog Watchface
 #define BAT_LVL				    // Battery Level Bar
 //#define TICKER                // Ticker will be used for Notifications etc. in a later Version
 #define BACKGROUND_PIC	Drache
+#define BACKGROUND_PIC2	Logo_lvgl
 
 #endif // !CONFIG_H
