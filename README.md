@@ -7,6 +7,7 @@ Ich behaubte gar nicht das Rad erfunden zu haben und bin Dankbar für die vielen
 # Features
 
 ```
+-   Wechsel der Watchfaces mit Wisch-Geste (nicht mehr über config.h) 
 -   Features können in der Config.ini ein- und ausgeschaltet werden
 -   Digitanzeige (Uhrzeit und Datum und mehr) (Font :https://www.keshikan.net/fonts-e.html)
 -   Analoganzeige (durchbrochene Zeiger, Schatten)
@@ -18,7 +19,6 @@ Ich behaubte gar nicht das Rad erfunden zu haben und bin Dankbar für die vielen
 # To Do
 
 ```
--   Wechsel der Watchfaces mit Wisch-Geste (nicht mehr über config.h) 
 -   Notifications (Gadgedbridge scheint geeignet)
 -   BLE
 -   Wifi
