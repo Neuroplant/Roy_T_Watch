@@ -18,6 +18,7 @@ Ich behaubte gar nicht das Rad erfunden zu haben und bin Dankbar für die vielen
 # To Do
 
 ```
+-   Wechsel der Watchfaces mit Wisch-Geste (nicht mehr über config.h) 
 -   Notifications (Gadgedbridge scheint geeignet)
 -   BLE
 -   Wifi
