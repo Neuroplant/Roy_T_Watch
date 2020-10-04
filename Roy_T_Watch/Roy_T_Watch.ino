@@ -18,22 +18,13 @@ TTGOClass *watch = nullptr;
 PCF8563_Class *rtc;
 
 #ifdef DIGITAL_1
-    typedef struct {
-        lv_obj_t *hourmin;
-        //lv_obj_t *second;
-        lv_obj_t *day;
-        lv_obj_t *month;
-        lv_obj_t *year;
-        lv_obj_t* stat1;
-        lv_obj_t* stat2;
-        lv_obj_t* stat3;
-        lv_obj_t* stat4;
-    } str_datetime_t;
-    static str_datetime_t DData, DDataS;
+#include "Digital1.h"
+
 #endif //DIGITAL_1
 
 #ifdef ANALOG_1
-    int Angle_S, Angle_M, Angle_H;
+#include "Analog1.h"
+
 #endif //ANALOG_1
 
 #ifdef SLEEP_TIMER
@@ -58,6 +49,7 @@ PCF8563_Class *rtc;
     int BatLvl;
 #endif //BAT_LVL
 
+   
 void setup()
 {
 #ifdef SERIAL_OUT
@@ -104,7 +96,7 @@ void setup()
 #endif //SLEEP_TIMER
 
     static lv_point_t valid_pos[] = { {0,0}, {1, 0} };
-    lv_obj_t* tileview;
+    static lv_obj_t* tileview;
     tileview = lv_tileview_create(lv_scr_act(), NULL);
     lv_tileview_set_valid_positions(tileview, valid_pos, 2);
     lv_tileview_set_edge_flash(tileview, true);
@@ -119,27 +111,27 @@ void setup()
 
 
 
-    lv_obj_t* img1 = lv_img_create(tile1, NULL);
-    lv_obj_t* img2 = lv_img_create(tile2, NULL);
+    lv_obj_t* watchface1 = lv_img_create(tile1, NULL);
+    lv_obj_t* watchface2 = lv_img_create(tile2, NULL);
  //Background
     LV_IMG_DECLARE(BACKGROUND_PIC);
-    lv_img_set_src(img1, &BACKGROUND_PIC);
-    lv_obj_align(img1, NULL, LV_ALIGN_CENTER, 0, 0);
+    lv_img_set_src(watchface1, &BACKGROUND_PIC);
+    lv_obj_align(watchface1, NULL, LV_ALIGN_CENTER, 0, 0);
     static lv_style_t bg_style;
     lv_style_set_bg_color(&bg_style, LV_STATE_DEFAULT, LV_COLOR_LCD_BG_BL_ON);
     lv_style_set_bg_opa(&bg_style, LV_STATE_DEFAULT, LV_OPA_50);
-    lv_obj_add_style(img1, LV_STATE_DEFAULT, &bg_style);
+    lv_obj_add_style(watchface1, LV_STATE_DEFAULT, &bg_style);
 
     LV_IMG_DECLARE(BACKGROUND_PIC2);
-    lv_img_set_src(img2, &BACKGROUND_PIC2);
-    lv_obj_align(img2, NULL, LV_ALIGN_CENTER, 0, 0);
+    lv_img_set_src(watchface2, &BACKGROUND_PIC2);
+    lv_obj_align(watchface2, NULL, LV_ALIGN_CENTER, 0, 0);
     static lv_style_t bg_style2;
     lv_style_set_bg_color(&bg_style2, LV_STATE_DEFAULT, LV_COLOR_LCD_BG_BL_ON);
     lv_style_set_bg_opa(&bg_style2, LV_STATE_DEFAULT, LV_OPA_50);
-    lv_obj_add_style(img2, LV_STATE_DEFAULT, &bg_style2);
+    lv_obj_add_style(watchface2, LV_STATE_DEFAULT, &bg_style2);
 
 #ifdef BAT_LVL
-	static lv_obj_t *BatBar = lv_bar_create(img2, NULL);
+	static lv_obj_t *BatBar = lv_bar_create(watchface2, NULL);
     static lv_style_t BatBar_Style, BatBar_V_Style;
     lv_style_set_bg_opa(&BatBar_Style, LV_STATE_DEFAULT, LV_OPA_50);
     lv_style_set_bg_color(&BatBar_Style, LV_STATE_DEFAULT, LV_COLOR_BLACK);
@@ -154,120 +146,13 @@ void setup()
 #endif //BAT_LVL
 
 #ifdef DIGITAL_1
-    LV_FONT_DECLARE(D14Seg_32p);
-    LV_FONT_DECLARE(D14Seg_64p);
-    static lv_style_t 
-        style_D1, 
-        style_D1s, 
-        style_D2,
-        style_D2s;
-    lv_style_init(&style_D1);
-    lv_style_init(&style_D1s);
-    lv_style_init(&style_D2);
-    lv_style_init(&style_D2s);
-
-    lv_style_set_text_color(&style_D1, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    lv_style_set_text_color(&style_D1s, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    lv_style_set_text_color(&style_D2, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    lv_style_set_text_color(&style_D2s, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-
-    lv_style_set_text_font(&style_D1, LV_STATE_DEFAULT, &D14Seg_64p);
-    lv_style_set_text_font(&style_D1s, LV_STATE_DEFAULT, &D14Seg_64p);
-    lv_style_set_text_font(&style_D2, LV_STATE_DEFAULT, &D14Seg_32p);
-    lv_style_set_text_font(&style_D2s, LV_STATE_DEFAULT, &D14Seg_32p);
-
-    lv_style_set_text_opa(&style_D1, LV_STATE_DEFAULT, LV_OPA_COVER);
-    lv_style_set_text_opa(&style_D1s, LV_STATE_DEFAULT, LV_OPA_40);
-    lv_style_set_text_opa(&style_D2, LV_STATE_DEFAULT, LV_OPA_COVER);
-    lv_style_set_text_opa(&style_D2s, LV_STATE_DEFAULT, LV_OPA_40);
-
-    DDataS.hourmin = lv_label_create(img1, nullptr);
-    //DDataS.second = lv_label_create(img1, nullptr);
-    DDataS.day = lv_label_create(img1, nullptr);
-    DDataS.month = lv_label_create(img1, nullptr);
-    DDataS.year = lv_label_create(img1, nullptr);
-    DDataS.stat1 = lv_label_create(img1, nullptr);
-    DDataS.stat2 = lv_label_create(img1, nullptr);
-    DDataS.stat3 = lv_label_create(img1, nullptr);
-    DDataS.stat4 = lv_label_create(img1, nullptr);
-
-    DData.hourmin = lv_label_create(img1, nullptr);
-    //DData.second = lv_label_create(img1, nullptr);
-    DData.day = lv_label_create(img1, nullptr);
-    DData.month = lv_label_create(img1, nullptr);
-    DData.year = lv_label_create(img1, nullptr);
-    DData.stat1 = lv_label_create(img1, nullptr);
-    DData.stat2 = lv_label_create(img1, nullptr);
-    DData.stat3 = lv_label_create(img1, nullptr);
-    DData.stat4 = lv_label_create(img1, nullptr);
-
-    lv_obj_add_style(DDataS.hourmin, LV_OBJ_PART_MAIN, &style_D1s);
-  //  lv_obj_add_style(DDataS.second, LV_OBJ_PART_MAIN, &style_D2s);
-    lv_obj_add_style(DDataS.day, LV_OBJ_PART_MAIN, &style_D2s);
-    lv_obj_add_style(DDataS.month, LV_OBJ_PART_MAIN, &style_D2s);
-    lv_obj_add_style(DDataS.year, LV_OBJ_PART_MAIN, &style_D2s);
-    lv_obj_add_style(DDataS.stat1, LV_OBJ_PART_MAIN, &style_D2s);
-    lv_obj_add_style(DDataS.stat2, LV_OBJ_PART_MAIN, &style_D2s);
-    lv_obj_add_style(DDataS.stat3, LV_OBJ_PART_MAIN, &style_D2s);
-    lv_obj_add_style(DDataS.stat4, LV_OBJ_PART_MAIN, &style_D2s);
-
-    lv_obj_add_style(DData.hourmin, LV_OBJ_PART_MAIN, &style_D1);
- //   lv_obj_add_style(DData.second, LV_OBJ_PART_MAIN, &style_D2);
-    lv_obj_add_style(DData.day, LV_OBJ_PART_MAIN, &style_D2);
-    lv_obj_add_style(DData.month, LV_OBJ_PART_MAIN, &style_D2);
-    lv_obj_add_style(DData.year, LV_OBJ_PART_MAIN, &style_D2);
-    lv_obj_add_style(DData.stat1, LV_OBJ_PART_MAIN, &style_D2);
-    lv_obj_add_style(DData.stat2, LV_OBJ_PART_MAIN, &style_D2);
-    lv_obj_add_style(DData.stat3, LV_OBJ_PART_MAIN, &style_D2);
-    lv_obj_add_style(DData.stat4, LV_OBJ_PART_MAIN, &style_D2);
-    /*
-    lv_label_set_text(DDataS.hourmin, "~~:~~");
-    //lv_label_set_text(DDataS.second, "~~");
-    lv_label_set_text(DDataS.day, "~~.");
-    lv_label_set_text(DDataS.month, "~~.");
-    lv_label_set_text(DDataS.year, "~~~~");
-    lv_label_set_text(DDataS.stat1, "~.~~A");
-    lv_label_set_text(DDataS.stat2, "~.~~V");
-    lv_label_set_text(DDataS.stat3, "~.~~h");
-    lv_label_set_text(DDataS.stat4, "~.~~s");
-
-    lv_label_set_text(DData.hourmin, "~~:~~");
-    //lv_label_set_text(DData.second, "~~");
-    lv_label_set_text(DData.day, "~~.");
-    lv_label_set_text(DData.month, "~~.");
-    lv_label_set_text(DData.year, "~~~~");
-    lv_label_set_text(DData.stat1, "~.~~A");
-    lv_label_set_text(DData.stat2, "~.~~V");
-    lv_label_set_text(DData.stat3, "~.~~h");
-    lv_label_set_text(DData.stat4, "~.~~s");
-    **/
-    lv_obj_align(DDataS.hourmin, img1, LV_ALIGN_IN_TOP_LEFT, 9, 14);
-   // lv_obj_align(DDataS.second, img1, LV_ALIGN_IN_TOP_LEFT, 204, 14);
-    lv_obj_align(DDataS.day, img1, LV_ALIGN_IN_TOP_LEFT, 9, 80);
-    lv_obj_align(DDataS.month, img1, LV_ALIGN_IN_TOP_LEFT, 54, 80);
-    lv_obj_align(DDataS.year, img1, LV_ALIGN_IN_TOP_LEFT, 104, 78);
-    lv_obj_align(DDataS.stat1, img1, LV_ALIGN_IN_TOP_LEFT, 14, 130);
-    lv_obj_align(DDataS.stat2, img1, LV_ALIGN_IN_TOP_LEFT, 114, 130);
-    lv_obj_align(DDataS.stat3, img1, LV_ALIGN_IN_TOP_LEFT, 14, 167);
-    lv_obj_align(DDataS.stat4, img1, LV_ALIGN_IN_TOP_LEFT, 114, 167);
-
-    lv_obj_align(DData.hourmin, img1, LV_ALIGN_IN_TOP_LEFT, 5, 10);
-   // lv_obj_align(DData.second, img1, LV_ALIGN_IN_TOP_LEFT, 200, 10);
-    lv_obj_align(DData.day, img1, LV_ALIGN_IN_TOP_LEFT, 5, 76);
-    lv_obj_align(DData.month, img1, LV_ALIGN_IN_TOP_LEFT, 50, 76);
-    lv_obj_align(DData.year, img1, LV_ALIGN_IN_TOP_LEFT, 100, 76);
-    lv_obj_align(DData.stat1, img1, LV_ALIGN_IN_TOP_LEFT, 10, 126);
-    lv_obj_align(DData.stat2, img1, LV_ALIGN_IN_TOP_LEFT, 110, 126);
-    lv_obj_align(DData.stat3, img1, LV_ALIGN_IN_TOP_LEFT, 10, 163);
-    lv_obj_align(DData.stat4, img1, LV_ALIGN_IN_TOP_LEFT, 110, 163);
-
-
+    SetupDigital1(watchface1);
 #endif // DIGITAL_1
 
 #ifdef TICKER
     LV_FONT_DECLARE(Segoe_24p);
 
-    static lv_obj_t *Ticker = lv_label_create (img1,NULL);
+    static lv_obj_t *Ticker = lv_label_create (watchface1,NULL);
     static lv_style_t style_small;
     lv_style_set_text_font(&style_small, LV_STATE_DEFAULT, &Segoe_24p);
     lv_style_set_text_color(&style_small,LV_STATE_DEFAULT,LV_COLOR_GRAY);//as long as it is onla stats Grey is enough
@@ -296,165 +181,52 @@ void setup()
 #endif // TICKER
 	
 #ifdef ANALOG_1
-// Watchface
-    static lv_obj_t *Second_Hand_s = lv_img_create(img2, NULL);
-    static lv_obj_t *Minute_Hand_s = lv_img_create(img2, NULL);
-    static lv_obj_t *Hour_Hand_s = lv_img_create(img2, NULL);
-    
-    static lv_obj_t *Hour_Hand = lv_img_create(img2, NULL);
-    static lv_obj_t *Minute_Hand = lv_img_create(img2, NULL);
-    static lv_obj_t *Second_Hand = lv_img_create(img2, NULL);
-
-// Dial   to do..maybe
-
-
-///HandShadow
-// HourHand 
-    LV_IMG_DECLARE(HourHand_S);
-    lv_img_set_src(Hour_Hand_s, &HourHand_S);
-    lv_img_set_antialias(Hour_Hand_s,true);
-    lv_img_set_pivot(Hour_Hand_s,20,8);
-    lv_obj_align(Hour_Hand_s, img2, LV_ALIGN_IN_TOP_LEFT, 105, 130);
-    lv_img_set_angle(Hour_Hand_s,3300);
-// MinuteHand
-    LV_IMG_DECLARE(MinuteHand_S);
-    lv_img_set_src(Minute_Hand_s, &MinuteHand_S);
-    lv_img_set_antialias(Minute_Hand_s,true);
-    lv_img_set_pivot(Minute_Hand_s,20,8);
-    lv_img_set_antialias(Minute_Hand_s,true);
-    lv_obj_align(Minute_Hand_s, img2,  LV_ALIGN_IN_TOP_LEFT, 105, 130);
-    lv_img_set_angle(Minute_Hand_s,2100);
-// SecondHand
-    LV_IMG_DECLARE(SecondHand_S);
-    lv_img_set_src(Second_Hand_s, &SecondHand_S);
-    lv_img_set_antialias(Second_Hand_s,true);
-    lv_img_set_pivot(Second_Hand_s,20,8);
-    lv_obj_align(Second_Hand_s, img2,  LV_ALIGN_IN_TOP_LEFT, 105, 130);
-    lv_img_set_angle(Second_Hand_s,900);
-
-// Normal Hand
-
-// HourHand
-    LV_IMG_DECLARE(HourHand);
-    lv_img_set_src(Hour_Hand, &HourHand);
-    lv_img_set_antialias(Hour_Hand,true);
-    lv_img_set_pivot(Hour_Hand,20,8);
-    lv_obj_align(Hour_Hand, img2, LV_ALIGN_IN_TOP_LEFT, 100, 120);
-    lv_img_set_angle(Hour_Hand,3300);
-// MinuteHand
-    LV_IMG_DECLARE(MinuteHand);
-    lv_img_set_src(Minute_Hand, &MinuteHand);
-    lv_img_set_antialias(Minute_Hand,true);
-    lv_img_set_pivot(Minute_Hand,20,8);
-    lv_img_set_antialias(Minute_Hand,true);
-    lv_obj_align(Minute_Hand, img2,  LV_ALIGN_IN_TOP_LEFT, 100, 120);
-    lv_img_set_angle(Minute_Hand,2100);
-// SecondHand
-    LV_IMG_DECLARE(SecondHand);
-    lv_img_set_src(Second_Hand, &SecondHand);
-    lv_img_set_antialias(Second_Hand,true);
-    lv_img_set_pivot(Second_Hand,20,8);
-    lv_obj_align(Second_Hand, img2,  LV_ALIGN_IN_TOP_LEFT, 100, 120);
-    lv_img_set_angle(Second_Hand,900);
-	
-// Shadow Style
-  static lv_style_t hand_s_style;
-    lv_style_set_image_opa(&hand_s_style, LV_STATE_DEFAULT, LV_OPA_20);
-    lv_obj_add_style(Second_Hand_s,LV_OBJ_PART_MAIN ,&hand_s_style);
-    lv_obj_add_style(Hour_Hand_s,LV_OBJ_PART_MAIN ,&hand_s_style);
-    lv_obj_add_style(Minute_Hand_s,LV_OBJ_PART_MAIN ,&hand_s_style);
-
-// Normal Style
-   static lv_style_t hand_style;
-    lv_obj_add_style(Second_Hand,LV_OBJ_PART_MAIN ,&hand_style);
-    lv_obj_add_style(Hour_Hand,LV_OBJ_PART_MAIN ,&hand_style);
-    lv_obj_add_style(Minute_Hand,LV_OBJ_PART_MAIN ,&hand_style);
-	
+    SetupAnalog1(watchface2);
 #endif //ANALOG_1
-   // lv_scr_load(img2);
 ///////////////////////////////////////////////////////
-    lv_task_create([](lv_task_t *t) 
-    {
-    RTC_Date curr_datetime = rtc->getDateTime();
+    lv_task_create([](lv_task_t* t)
+        {
+            RTC_Date curr_datetime = rtc->getDateTime();
+
+            //            lv_coord_t* act_coord_x, * act_coord_y;
+            //            lv_tileview_get_tile_act(tileview, act_coord_x, act_coord_y);
+
+
+            //    if ((*act_coord_x == 1) && (*act_coord_y == 0))
+            //    {
 #ifdef ANALOG_1	
-
-    Angle_S = ((int) curr_datetime.second 	*60) 	+ 2700;
-    Angle_M = ((int) curr_datetime.minute	*60) 	+ 2700;
-    Angle_H = ((int) curr_datetime.hour		*300)	+ ((int) curr_datetime.minute	*5)	+ 2700;
-
-    while (Angle_S >= 3600) Angle_S = Angle_S - 3600;
-    while (Angle_M >= 3600) Angle_M = Angle_M - 3600;
-    while (Angle_H >= 3600) Angle_H = Angle_H - 3600;
-
-	//Normal
-    lv_img_set_angle(Second_Hand,Angle_S);
-    lv_img_set_angle(Minute_Hand,Angle_M);
-    lv_img_set_angle(Hour_Hand,Angle_H);
-    
-    //Shadow
-    lv_img_set_angle(Second_Hand_s,Angle_S);
-    lv_img_set_angle(Minute_Hand_s,Angle_M);
-    lv_img_set_angle(Hour_Hand_s,Angle_H);
-	
+            UpdateAnalog1(curr_datetime);
 #endif //ANALOG_1
+            //   }
+            //    if ((*act_coord_x == 0) && (*act_coord_y == 0))
+            //    {
 #ifdef DIGITAL_1
-
-    if (((curr_datetime.second / 2) * 2) == (curr_datetime.second))//":" only on even seconds
-    {
-        lv_label_set_text_fmt(DDataS.hourmin, "%02u:%02u", curr_datetime.hour, curr_datetime.minute);
-    }
-    else {
-        lv_label_set_text_fmt(DDataS.hourmin, "%02u %02u", curr_datetime.hour, curr_datetime.minute);
-    };
-  //  lv_label_set_text_fmt(DDataS.second, "%02u", curr_datetime.second);
-    lv_label_set_text_fmt(DDataS.day, "%02u.%02u.%04u", curr_datetime.day, curr_datetime.month, curr_datetime.month);
-    lv_label_set_text(DDataS.month, "");
-    lv_label_set_text(DDataS.year, "");
-    lv_label_set_text_fmt(DDataS.stat1, "%0.02f A", watch->power->getBattDischargeCurrent());
-    lv_label_set_text_fmt(DDataS.stat2, "%02u", watch->power->getBattPercentage());
-    lv_label_set_text_fmt(DDataS.stat3, "%0.02f V", watch->power->getBattVoltage());
-    lv_label_set_text_fmt(DDataS.stat4, "%02u", curr_datetime.second);
-
-    if (((curr_datetime.second / 2) * 2) == (curr_datetime.second)) //":" only on even seconds
-    {
-        lv_label_set_text_fmt(DData.hourmin, "%02u:%02u", curr_datetime.hour, curr_datetime.minute);
-    }
-    else {
-        lv_label_set_text_fmt(DData.hourmin, "%02u %02u", curr_datetime.hour, curr_datetime.minute);
-    };  //  lv_label_set_text_fmt(DData.second, "%02u", curr_datetime.second);
-    lv_label_set_text_fmt(DData.day, "%02u.%02u.%04u", curr_datetime.day,curr_datetime.month,curr_datetime.year);
-    lv_label_set_text(DData.month, "" );
-    lv_label_set_text(DData.year, "" );
-    lv_label_set_text_fmt(DData.stat1, "%.3f A", (float)watch->power->getBattDischargeCurrent());
-    lv_label_set_text_fmt(DData.stat2, "%02u", watch->power->getBattPercentage());
-    lv_label_set_text_fmt(DData.stat3, "%.3f V",(float)watch->power->getBattVoltage());
-    lv_label_set_text_fmt(DData.stat4, "%02u", curr_datetime.second);
-
+            UpdateDigital1(curr_datetime, watch->power->getBattDischargeCurrent(), watch->power->getBattPercentage(), watch->power->getBattVoltage(), curr_datetime.second);
 #endif //DIGITAL_1  
+            //   }
 #ifdef BAT_LVL
-    BatLvl = watch->power->getBattPercentage();
-    if (BatLvl <= 20)     lv_style_set_bg_color(&BatBar_V_Style, LV_STATE_DEFAULT, LV_COLOR_RED);
-	lv_bar_set_value(BatBar,0,(uint16_t)(BatLvl));
+            BatLvl = watch->power->getBattPercentage();
+            if (BatLvl <= 20)     lv_style_set_bg_color(&BatBar_V_Style, LV_STATE_DEFAULT, LV_COLOR_RED);
+            lv_bar_set_value(BatBar, 0, (uint16_t)(BatLvl));
 #endif //BAT_LVL
 #ifdef TICKER
-    lv_label_set_text_fmt(Ticker, "\nVBus: %02u mV \nVBus: %02u mA \nBatt: %02u mV \nPer:  %02u %% ", (uint16_t)watch->power->getVbusVoltage(), (uint16_t)watch->power->getVbusCurrent(), (uint16_t)watch->power->getBattVoltage(), (uint16_t)watch->power->getBattPercentage());
+            lv_label_set_text_fmt(Ticker, "\nVBus: %02u mV \nVBus: %02u mA \nBatt: %02u mV \nPer:  %02u %% ", (uint16_t)watch->power->getVbusVoltage(), (uint16_t)watch->power->getVbusCurrent(), (uint16_t)watch->power->getBattVoltage(), (uint16_t)watch->power->getBattPercentage());
 #endif //TICKER
 #ifdef SERIAL_OUT
-  Serial.print("Vbus: "); Serial.print(watch->power->getVbusVoltage()); Serial.println(" mV");
-  Serial.print("Vbus: "); Serial.print(watch->power->getVbusCurrent()); Serial.println(" mA");
-  Serial.print("BATT: "); Serial.print(watch->power->getBattVoltage()); Serial.println(" mV");
-  Serial.print("Per:  "); Serial.print(watch->power->getBattPercentage()); Serial.println(" %");
-  Serial.println();
-  Serial.print("Time:"); Serial.print(curr_datetime.hour); Serial.print(":");Serial.print(curr_datetime.minute); Serial.print(":");Serial.print(curr_datetime.second); Serial.println();
-    Serial.println();
+            Serial.print("Vbus: "); Serial.print(watch->power->getVbusVoltage()); Serial.println(" mV");
+            Serial.print("Vbus: "); Serial.print(watch->power->getVbusCurrent()); Serial.println(" mA");
+            Serial.print("BATT: "); Serial.print(watch->power->getBattVoltage()); Serial.println(" mV");
+            Serial.print("Per:  "); Serial.print(watch->power->getBattPercentage()); Serial.println(" %");
+            Serial.println();
+            Serial.print("Time:"); Serial.print(curr_datetime.hour); Serial.print(":"); Serial.print(curr_datetime.minute); Serial.print(":"); Serial.print(curr_datetime.second); Serial.println();
+            Serial.println();
 #endif //SERIAL_OUT
-////
-
+            ////
 
 	}, 1000, LV_TASK_PRIO_MID, nullptr);
 /////////////////////////////////////////////////////////////
     // Set 20MHz operating speed to reduce power consumption
-    setCpuFrequencyMhz(40);
+    setCpuFrequencyMhz(80);
 #ifdef SLEEP_TIMER
 
     RTC_Date SleepTimer = rtc->getDateTime();
