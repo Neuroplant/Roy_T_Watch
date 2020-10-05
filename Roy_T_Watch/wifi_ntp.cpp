@@ -5,6 +5,19 @@
 #include "secret.h"
 #include "config.h"
 
+// Wifi variables 
+// The credetials are stored in src/secret.h file that doesnt need to be synched with the repo. The following format is used:
+// #define SSID "MY_SSID"
+// #define PASSWORD "MY_PASSWORD"
+const char* ssid       = SSID;
+const char* ssid_passphrase   = PASSWORD;
+
+// NTP Settings : for more ionformations, https://lastminuteengineers.com/esp32-ntp-server-date-time-tutorial/
+//const char* ntpServer = "pool.ntp.org"; // (for worlwide NTP server)
+const char* ntpServer = "europe.pool.ntp.org";
+const long gmtOffset_sec = 3600;
+const int  daylightOffset_sec = 3600;
+
 bool syncRtc2Ntp()
 {
     WiFi.begin(ssid, ssid_passphrase);
