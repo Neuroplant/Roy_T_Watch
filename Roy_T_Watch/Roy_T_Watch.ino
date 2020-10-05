@@ -25,6 +25,10 @@ PCF8563_Class *rtc;
 	#include "Analog1.h"
 #endif //ANALOG_1
 
+#ifdef WIFI_NTP
+	#include bool syncRtc2Ntp()
+#endif //WIFI_NTP
+
 #ifdef SLEEP_TIMER
     int Sleeptimer_End, Sleeptimer_Now;
     AXP20X_Class *power;
@@ -55,10 +59,13 @@ void setup()
     rtc = watch->rtc;
 // Use compile time
     rtc->check();
+#ifdef WIFI_NTP
+	syncRtc2Ntp();
+#endif //WIFI_NTP
 // Turn on the backlight
     watch->openBL();
 //Lower the brightness
-    watch->bl->adjust(150);
+    	watch->bl->adjust(150);
 
 #ifdef SLEEP_TIMER
 	power = watch->power;
