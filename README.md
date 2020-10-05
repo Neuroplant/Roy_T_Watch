@@ -4,6 +4,11 @@ Ich wünsche euch viel Spaß mit der LiLyGo T-Watch 2020 Hier seht ihr, was ich 
 
 Ich behaubte gar nicht das Rad erfunden zu haben und bin Dankbar für die vielen T-Watch Projekte die ihren Code auf Github teilen und deren Anregungen und Lösungen mir sehr helfen.
 
+Besonderer Dank gilt dabei folgenden Projekten:
+  https://github.com/Xinyuan-LilyGO/TTGO_TWatch_Library
+  https://github.com/bburky/t-watch-2020-project
+  https://github.com/wizche/ttgo-smb
+  
 # Features
 
 ```
