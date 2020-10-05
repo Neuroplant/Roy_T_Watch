@@ -1,6 +1,6 @@
 // Roy_T_Watch
-// main
-// 03.10.2020 Neuroplant
+// Main Programm (Roy_T_Watch.ino)
+// 05.10.2020 Neuroplant
 
 #include "config.h"
 #include <iostream>
@@ -18,13 +18,11 @@ TTGOClass *watch = nullptr;
 PCF8563_Class *rtc;
 
 #ifdef DIGITAL_1
-#include "Digital1.h"
-
+	#include "Digital1.h"
 #endif //DIGITAL_1
 
 #ifdef ANALOG_1
-#include "Analog1.h"
-
+	#include "Analog1.h"
 #endif //ANALOG_1
 
 #ifdef SLEEP_TIMER
@@ -32,35 +30,29 @@ PCF8563_Class *rtc;
     AXP20X_Class *power;
     BMA *sensor;
 
-    int epoch_r(RTC_Date Value)
-    {
-        int i =
+int epoch_r(RTC_Date Value) // not correct epoch, but close enough for my purposes (can not finde PCF8563_Class(RTC) providing epoch
+{
+	int i =
             (Value.second)
             + (Value.minute * 60)
             + (Value.hour * 60 * 60)
             + (Value.day * 60 * 60 * 24)
             + (Value.month * 60 * 60 * 24 * 30)
             + ((Value.year - 1970) * 60 * 60 * 24 * 30 * 12);
-        return i;
-    }
+	return i;
+}
 #endif //SLEEP_TIMER
 
 #ifdef BAT_LVL
     int BatLvl;
 #endif //BAT_LVL
-
    
 void setup()
 {
-#ifdef SERIAL_OUT
-    Serial.begin(SERIAL_OUT);
-#endif //SERIAL_OUT
-    
     watch = TTGOClass::getWatch();
     watch->begin();
     watch->lvgl_begin();
     rtc = watch->rtc;
-
 // Use compile time
     rtc->check();
 // Turn on the backlight
@@ -69,50 +61,49 @@ void setup()
     watch->bl->adjust(150);
 
 #ifdef SLEEP_TIMER
-    power = watch->power;
-    sensor = watch->bma;
-
-// Accel parameter structure
-    Acfg cfg;
-    cfg.odr = BMA4_OUTPUT_DATA_RATE_100HZ;
-    cfg.range = BMA4_ACCEL_RANGE_2G;
-    cfg.bandwidth = BMA4_ACCEL_NORMAL_AVG4;
-    cfg.perf_mode = BMA4_CONTINUOUS_MODE;
-    sensor->accelConfig(cfg);
-    sensor->enableAccel();
-// Disable BMA423 isStepCounter feature
-    sensor->enableFeature(BMA423_STEP_CNTR, false);
-// Enable BMA423 isTilt feature
-    sensor->enableFeature(BMA423_TILT, true);
-// Enable BMA423 isDoubleClick feature
-    sensor->enableFeature(BMA423_WAKEUP, true);
-// Reset steps
-    sensor->resetStepCounter();
-// Turn off feature interrupt
-// sensor->enableStepCountInterrupt();
-    sensor->enableTiltInterrupt();
-// It corresponds to isDoubleClick interrupt
-    sensor->enableWakeupInterrupt();
+	power = watch->power;
+    	sensor = watch->bma;
+	// Accel parameter structure
+    	Acfg cfg;
+    	cfg.odr = BMA4_OUTPUT_DATA_RATE_100HZ;
+    	cfg.range = BMA4_ACCEL_RANGE_2G;
+    	cfg.bandwidth = BMA4_ACCEL_NORMAL_AVG4;
+    	cfg.perf_mode = BMA4_CONTINUOUS_MODE;
+    	sensor->accelConfig(cfg);
+    	sensor->enableAccel();
+	// Disable BMA423 isStepCounter feature
+	sensor->enableFeature(BMA423_STEP_CNTR, false);
+	// Enable BMA423 isTilt feature
+    	sensor->enableFeature(BMA423_TILT, true);
+	// Enable BMA423 isDoubleClick feature
+    	sensor->enableFeature(BMA423_WAKEUP, true);
+	// Reset steps
+    	sensor->resetStepCounter();
+	// Turn off feature interrupt
+	// sensor->enableStepCountInterrupt();
+    	sensor->enableTiltInterrupt();
+	// It corresponds to isDoubleClick interrupt
+    	sensor->enableWakeupInterrupt();
 #endif //SLEEP_TIMER
+	
+// Create Screen with two horizontal Tiles
+	static lv_point_t valid_pos[] = { {0,0}, {1, 0} }; 
+    	static lv_obj_t* tileview;
+    	tileview = lv_tileview_create(lv_scr_act(), NULL);
+    	lv_tileview_set_valid_positions(tileview, valid_pos, 2);
+    	lv_tileview_set_edge_flash(tileview, true);
 
-    static lv_point_t valid_pos[] = { {0,0}, {1, 0} };
-    static lv_obj_t* tileview;
-    tileview = lv_tileview_create(lv_scr_act(), NULL);
-    lv_tileview_set_valid_positions(tileview, valid_pos, 2);
-    lv_tileview_set_edge_flash(tileview, true);
+	lv_obj_t* tile1 = lv_obj_create(tileview, NULL);
+    	lv_obj_set_size(tile1, LV_HOR_RES, LV_VER_RES);
+    	lv_tileview_add_element(tileview, tile1);
 
-    lv_obj_t* tile1 = lv_obj_create(tileview, NULL);
-    lv_obj_set_size(tile1, LV_HOR_RES, LV_VER_RES);
-    lv_tileview_add_element(tileview, tile1);
+    	lv_obj_t* tile2 = lv_obj_create(tileview, tile1);
+    	lv_obj_set_pos(tile2, LV_HOR_RES, 0);
+    	lv_tileview_add_element(tileview, tile2);
 
-    lv_obj_t* tile2 = lv_obj_create(tileview, tile1);
-    lv_obj_set_pos(tile2, LV_HOR_RES, 0);
-    lv_tileview_add_element(tileview, tile2);
-
-
-
-    lv_obj_t* watchface1 = lv_img_create(tile1, NULL);
-    lv_obj_t* watchface2 = lv_img_create(tile2, NULL);
+    lv_obj_t* watchface1 = lv_img_create(tile1, NULL); 		//Create "watchface1" on tile1
+    lv_obj_t* watchface2 = lv_img_create(tile2, NULL); 		//Create "watchface2" in tile2
+	
  //Background
     LV_IMG_DECLARE(BACKGROUND_PIC);
     lv_img_set_src(watchface1, &BACKGROUND_PIC);
@@ -141,98 +132,43 @@ void setup()
     lv_obj_add_style(BatBar, LV_BAR_PART_INDIC, &BatBar_V_Style);
     lv_bar_set_range(BatBar, 0, 100);
 	lv_bar_set_start_value(BatBar,0,LV_ANIM_ON);
-	lv_obj_set_size(BatBar, 220, 10);
-    lv_obj_align(BatBar, NULL, LV_ALIGN_IN_TOP_LEFT, 5, 15);
+	lv_obj_set_size(BatBar, LV_HOR_RES -10 , 10);
+    	lv_obj_align(BatBar, NULL, LV_ALIGN_IN_TOP_LEFT, 5, 5);
 #endif //BAT_LVL
 
 #ifdef DIGITAL_1
     SetupDigital1(watchface1);
 #endif // DIGITAL_1
 
-#ifdef TICKER
-    LV_FONT_DECLARE(Segoe_24p);
-
-    static lv_obj_t *Ticker = lv_label_create (watchface1,NULL);
-    static lv_style_t style_small;
-    lv_style_set_text_font(&style_small, LV_STATE_DEFAULT, &Segoe_24p);
-    lv_style_set_text_color(&style_small,LV_STATE_DEFAULT,LV_COLOR_GRAY);//as long as it is onla stats Grey is enough
-    lv_style_set_text_opa(&style_small,LV_STATE_DEFAULT,LV_OPA_COVER);
-    lv_style_set_shadow_width(&style_small, LV_STATE_DEFAULT, 8);
-    lv_style_set_shadow_opa(&style_small, LV_STATE_DEFAULT, LV_OPA_50);
-    lv_style_set_shadow_color(&style_small, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    lv_style_set_shadow_ofs_x(&style_small, LV_STATE_DEFAULT, 3);
-    lv_style_set_shadow_ofs_y(&style_small, LV_STATE_DEFAULT, 6);
-
-    lv_label_set_long_mode(Ticker,LV_LABEL_LONG_DOT);
-    lv_obj_set_width(Ticker, 220);
-    lv_obj_add_style(Ticker, LV_OBJ_PART_MAIN, &style_small);
-    lv_label_set_text(Ticker, "");
- //   lv_label_set_text(Ticker, "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. \n At vero eos et accusam et justo duo dolores et ea rebum. \n Stet clita kasd gubergren, no sea takimata sanctus est \n Lorem ipsum dolor sit amet. \n Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. \n At vero eos et accusam et justo duo dolores et ea rebum. \n Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\n");
-#ifdef DIGITAL_1
-    lv_obj_set_height(Ticker, 55);
-    lv_obj_align(Ticker, NULL, LV_ALIGN_IN_TOP_LEFT, 5, 180);
-#endif //DIGITAL1
-#ifndef DIGITAL_1
-    lv_obj_set_height(Ticker, 230);
-    lv_obj_align(Ticker, NULL, LV_ALIGN_IN_TOP_LEFT, 15, 5);
-#endif //Not DIGITAL_1
-
-
-#endif // TICKER
-	
 #ifdef ANALOG_1
     SetupAnalog1(watchface2);
 #endif //ANALOG_1
-///////////////////////////////////////////////////////
-    lv_task_create([](lv_task_t* t)
+
+	///////////////////////////////////////////////////////
+	lv_task_create([](lv_task_t* t)
         {
             RTC_Date curr_datetime = rtc->getDateTime();
-
-            //            lv_coord_t* act_coord_x, * act_coord_y;
-            //            lv_tileview_get_tile_act(tileview, act_coord_x, act_coord_y);
-
-
-            //    if ((*act_coord_x == 1) && (*act_coord_y == 0))
-            //    {
 #ifdef ANALOG_1	
             UpdateAnalog1(curr_datetime);
 #endif //ANALOG_1
-            //   }
-            //    if ((*act_coord_x == 0) && (*act_coord_y == 0))
-            //    {
+
 #ifdef DIGITAL_1
             UpdateDigital1(curr_datetime, watch->power->getBattDischargeCurrent(), watch->power->getBattPercentage(), watch->power->getBattVoltage(), curr_datetime.second);
 #endif //DIGITAL_1  
-            //   }
+
 #ifdef BAT_LVL
             BatLvl = watch->power->getBattPercentage();
             if (BatLvl <= 20)     lv_style_set_bg_color(&BatBar_V_Style, LV_STATE_DEFAULT, LV_COLOR_RED);
             lv_bar_set_value(BatBar, 0, (uint16_t)(BatLvl));
 #endif //BAT_LVL
-#ifdef TICKER
-            lv_label_set_text_fmt(Ticker, "\nVBus: %02u mV \nVBus: %02u mA \nBatt: %02u mV \nPer:  %02u %% ", (uint16_t)watch->power->getVbusVoltage(), (uint16_t)watch->power->getVbusCurrent(), (uint16_t)watch->power->getBattVoltage(), (uint16_t)watch->power->getBattPercentage());
-#endif //TICKER
-#ifdef SERIAL_OUT
-            Serial.print("Vbus: "); Serial.print(watch->power->getVbusVoltage()); Serial.println(" mV");
-            Serial.print("Vbus: "); Serial.print(watch->power->getVbusCurrent()); Serial.println(" mA");
-            Serial.print("BATT: "); Serial.print(watch->power->getBattVoltage()); Serial.println(" mV");
-            Serial.print("Per:  "); Serial.print(watch->power->getBattPercentage()); Serial.println(" %");
-            Serial.println();
-            Serial.print("Time:"); Serial.print(curr_datetime.hour); Serial.print(":"); Serial.print(curr_datetime.minute); Serial.print(":"); Serial.print(curr_datetime.second); Serial.println();
-            Serial.println();
-#endif //SERIAL_OUT
-            ////
-
 	}, 1000, LV_TASK_PRIO_MID, nullptr);
 /////////////////////////////////////////////////////////////
-    // Set 20MHz operating speed to reduce power consumption
     setCpuFrequencyMhz(80);
 #ifdef SLEEP_TIMER
-
     RTC_Date SleepTimer = rtc->getDateTime();
     Sleeptimer_End = epoch_r(rtc->getDateTime()) + 60;
 #endif //SLEEP_TIMER
-    }
+}
 
 
 void loop()
@@ -240,16 +176,12 @@ void loop()
     lv_task_handler();
 	
 #ifdef SLEEP_TIMER
-	
     Sleeptimer_Now = epoch_r(rtc->getDateTime());
-
     if (Sleeptimer_Now>=Sleeptimer_End) 
     {
-        Sleeptimer_End = Sleeptimer_End +60;
+        Sleeptimer_End =+ 60;
         watch->displaySleep();
         watch->powerOff();
-    // LDO2 is used to power the display, and LDO2 can be turned off if needed
-    // power->setPowerOutPut(AXP202_LDO2, false);
         esp_sleep_enable_ext1_wakeup(GPIO_SEL_39, ESP_EXT1_WAKEUP_ANY_HIGH);
         esp_deep_sleep_start();
     }
