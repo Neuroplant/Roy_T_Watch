@@ -1,9 +1,10 @@
 
 #include "wifi_ntp.h"
 #include <WiFi.h>
-#iclude "time.h"
+#include "time.h"
 #include "secret.h"
 #include "config.h"
+#include "LilyGoWatch.h"
 
 // Wifi variables 
 // The credetials are stored in src/secret.h file that doesnt need to be synched with the repo. The following format is used:
@@ -18,7 +19,7 @@ const char* ntpServer = "europe.pool.ntp.org";
 const long gmtOffset_sec = 3600;
 const int  daylightOffset_sec = 3600;
 
-bool syncRtc2Ntp()
+bool syncRtc2Ntp(PCF8563_Class *wwatch)
 {
     WiFi.begin(ssid, ssid_passphrase);
  // after 6 sec if WiFi is not found abort and avoid locking the setup
@@ -48,8 +49,7 @@ bool syncRtc2Ntp()
     updateRTC.hour = timeinfo.tm_hour;
     updateRTC.minute = timeinfo.tm_min;
     updateRTC.second = timeinfo.tm_sec;
-    watch->rtc->setDateTime(updateRTC);
-    Serial.println("RTC time synched with NTP");
+    wwatch->setDateTime(updateRTC);
 
     //disconnect WiFi as it's no longer needed
     WiFi.disconnect(true);
