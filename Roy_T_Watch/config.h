@@ -28,5 +28,6 @@
 #define BAT_LVL				                  // Battery Level Bar
 #define BACKGROUND_PIC	Drache          // use "Drache.c" as Background for first Watchface - see https://lvgl.io/tools/imageconverter to create your own
 #define BACKGROUND_PIC2	Logo_lvgl       // use "Logo_lvgl.c" as Backgroud for second Watchface ...
+#define WIFI_NTP                        // activate wifi to sync time with ntp
 
 #endif // !CONFIG_H
