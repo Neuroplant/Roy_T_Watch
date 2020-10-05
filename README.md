@@ -7,22 +7,21 @@ Ich behaubte gar nicht das Rad erfunden zu haben und bin Dankbar für die vielen
 # Features
 
 ```
--   Wechsel der Watchfaces mit Wisch-Geste (nicht mehr über config.h) 
+-   Wechsel der Watchfaces mit Wisch-Geste (nicht mehr nur über config.h) 
 -   Features können in der Config.ini ein- und ausgeschaltet werden
 -   Digitanzeige (Uhrzeit und Datum und mehr) (Font :https://www.keshikan.net/fonts-e.html)
 -   Analoganzeige (durchbrochene Zeiger, Schatten)
 -   Powersave 
--   Ticker (Statusanzeigen)
 ✌
 ```
 
 # To Do
 
 ```
--   Notifications (Gadgedbridge scheint geeignet)
--   BLE
--   Wifi
--   NTP Abfrage
+-   Weitere Codebereinigung
+-   Powersave verbessern (z.Z dauert es zu lange bis die Uhr wieder hochgefahren ist...)
+-   Wifi für NTP abfrage
+-   BLE für Notifications (Gadgedbridge scheint geeignet)
 -   Aktionen im Smarthome auslösen (MQTT)
 -   Standby verzögern wenn Interaktionen mit der Uhr erfolgen
 -   Fotos und Video der Features
