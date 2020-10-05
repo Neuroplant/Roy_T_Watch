@@ -1,4 +1,6 @@
-// Analog1.h
+// Roy_T_Watch
+// Analog Watchface 1 (Analog1.h)
+// 05.10.2020 Neuroplant
 
 #ifndef _ANALOG1_h
 #define _ANALOG1_h
