@@ -11,9 +11,9 @@
 #include "config.h"
 
 
-void SetupAnalog1(lv_obj_t* face);
+void SetupAnalog1(lv_obj_t* face);	//setup Watchface "Analog1" on Parent "face"
 
-void UpdateAnalog1(RTC_Date datetime);
+void UpdateAnalog1(RTC_Date datetime);	//uppdate Watchface "Analog1" with current data
 
 #endif
 
