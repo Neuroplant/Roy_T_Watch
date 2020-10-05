@@ -37,3 +37,6 @@
 *.vcxproj.users
 *.sln
 *.log
+
+# Secret Keys
+secret.h

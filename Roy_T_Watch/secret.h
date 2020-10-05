@@ -1,0 +1,2 @@
+#define SSID "MY_SSID"
+#define PASSWORD "MY_PASSWORD"
