@@ -1,3 +1,6 @@
+// Roy_T_Watch
+// Timesync via Wifi with NTP (wifi_ntp.cpp)
+// 05.10.2020 Neuroplant
 
 #include "wifi_ntp.h"
 #include <WiFi.h>
@@ -7,7 +10,7 @@
 #include "LilyGoWatch.h"
 
 // Wifi variables 
-// The credetials are stored in src/secret.h file that doesnt need to be synched with the repo. The following format is used:
+// The credetials are stored in secret.h file that doesnt need to be synched with the repo. The following format is used:
 // #define SSID "MY_SSID"
 // #define PASSWORD "MY_PASSWORD"
 const char* ssid       = SSID;
