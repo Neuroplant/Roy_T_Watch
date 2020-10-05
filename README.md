@@ -12,6 +12,7 @@ Besonderer Dank gilt dabei folgenden Projekten:
 # Features
 
 ```
+-   Wifi für NTP Abfrage (Wifi SSID und Passphrase in secret.h)
 -   Wechsel der Watchfaces mit Wisch-Geste (nicht mehr nur über config.h) 
 -   Features können in der Config.ini ein- und ausgeschaltet werden
 -   Digitanzeige (Uhrzeit und Datum und mehr) (Font :https://www.keshikan.net/fonts-e.html)
@@ -25,7 +26,6 @@ Besonderer Dank gilt dabei folgenden Projekten:
 ```
 -   Weitere Codebereinigung
 -   Powersave verbessern (z.Z dauert es zu lange bis die Uhr wieder hochgefahren ist...)
--   Wifi für NTP abfrage
 -   BLE für Notifications (Gadgedbridge scheint geeignet)
 -   Aktionen im Smarthome auslösen (MQTT)
 -   Standby verzögern wenn Interaktionen mit der Uhr erfolgen
