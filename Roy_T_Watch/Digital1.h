@@ -35,9 +35,10 @@
         style_D2,		//Style for all other fields (small)
         style_D2s;		//Style for all other fields shadow (small)
 
+    static lv_style_t bg_style;
+
     void SetupDigital1(lv_obj_t* face);		//setup Watchface "Digital1" on Parent "face"
 
     void UpdateDigital1(RTC_Date datetime, float Val1, int Val2, float Val3, int Val4);	//uppdate Watchface "Digital1" with current data (time plus four additional fields)
 
 #endif
-

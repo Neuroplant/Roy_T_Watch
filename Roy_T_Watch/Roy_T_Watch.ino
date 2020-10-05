@@ -7,14 +7,6 @@
 #include <iostream>
 #include <string>
 
-#define LV_COLOR_LCD_BG_BL_ON LV_COLOR_MAKE(0xA8, 0xC6, 0x4E)   //Old Style LCD Simulation Background /Light off
-#define LV_COLOR_LCD_BG_BL_OFF LV_COLOR_MAKE(0x3C, 0x41, 0x2C)  //Old Style LCD Simulation Background /Light off
-#define LV_COLOR_LCD_SEG_ON LV_COLOR_MAKE(0xF0, 0xFA, 0xF0)     //Old Style LCD Simulation Segment on
-#define LV_COLOR_LCD_SEG_OFF LV_COLOR_MAKE(0xFF, 0xFF, 0xFF)    //Old Style LCD Simulation Segment off/Light off/Better use OPA_10
-#define LV_COLOR_LCD_SEG_SHAD LV_COLOR_MAKE(0xFF, 0xFF, 0xFF)   //Old Style LCD Simulation Segment Shadow (only if Light on)/Better use OPA_50
-
-#define LV_COLOR_PHOSPHOR LV_COLOR_MAKE(0x88, 0xFF, 0x88) 
-
 TTGOClass *watch = nullptr;
 PCF8563_Class *rtc;
 
@@ -113,22 +105,9 @@ void setup()
     lv_obj_t* watchface2 = lv_img_create(tile2, NULL); 		//Create "watchface2" in tile2
 	
  //Background
-    LV_IMG_DECLARE(BACKGROUND_PIC);
-    lv_img_set_src(watchface1, &BACKGROUND_PIC);
-    lv_obj_align(watchface1, NULL, LV_ALIGN_CENTER, 0, 0);
-    static lv_style_t bg_style;
-    lv_style_set_bg_color(&bg_style, LV_STATE_DEFAULT, LV_COLOR_LCD_BG_BL_ON);
-    lv_style_set_bg_opa(&bg_style, LV_STATE_DEFAULT, LV_OPA_50);
-    lv_obj_add_style(watchface1, LV_STATE_DEFAULT, &bg_style);
 
-    LV_IMG_DECLARE(BACKGROUND_PIC2);
-    lv_img_set_src(watchface2, &BACKGROUND_PIC2);
-    lv_obj_align(watchface2, NULL, LV_ALIGN_CENTER, 0, 0);
-    static lv_style_t bg_style2;
-    lv_style_set_bg_color(&bg_style2, LV_STATE_DEFAULT, LV_COLOR_LCD_BG_BL_ON);
-    lv_style_set_bg_opa(&bg_style2, LV_STATE_DEFAULT, LV_OPA_50);
-    lv_obj_add_style(watchface2, LV_STATE_DEFAULT, &bg_style2);
 
+   
 #ifdef BAT_LVL
 	static lv_obj_t *BatBar = lv_bar_create(watchface2, NULL);
     static lv_style_t BatBar_Style, BatBar_V_Style;

@@ -9,6 +9,14 @@ void SetupDigital1(lv_obj_t *face)
 {
     LV_FONT_DECLARE(D14Seg_32p);        //select font "D14Seg_32p.c" (for small fields)
     LV_FONT_DECLARE(D14Seg_64p);        //select font "D14Seg_64p.c" (for big fields)
+
+    //Backround
+    LV_IMG_DECLARE(BACKGROUND_PIC);
+    lv_img_set_src(face, &BACKGROUND_PIC);
+    lv_obj_align(face, NULL, LV_ALIGN_CENTER, 0, 0);
+    lv_style_set_bg_color(&bg_style, LV_STATE_DEFAULT, LV_COLOR_LCD_BG_BL_ON);
+    lv_style_set_bg_opa(&bg_style, LV_STATE_DEFAULT, LV_OPA_50);
+    lv_obj_add_style(face, LV_STATE_DEFAULT, &bg_style);
     
     //init styles
     lv_style_init(&style_D1);
@@ -66,22 +74,21 @@ void SetupDigital1(lv_obj_t *face)
     lv_obj_add_style(DData.stat4, LV_OBJ_PART_MAIN, &style_D2);
 
     //position fields
-	int shadow_offsetx = 3;				//Shadow offset x
-	int shadow_offsety = 4;				//Shadow offset y
+	
     
     lv_obj_align(DDataS.hourmin, face, LV_ALIGN_IN_TOP_LEFT, 5 + shadow_offsetx, 10 + shadow_offsety);
     lv_obj_align(DDataS.date, face, LV_ALIGN_IN_TOP_LEFT, 5 + shadow_offsetx, 76 + shadow_offsety);
     lv_obj_align(DDataS.stat1, face, LV_ALIGN_IN_TOP_LEFT, 10 + shadow_offsetx, 126 + shadow_offsety);
-    lv_obj_align(DDataS.stat2, face, LV_ALIGN_IN_TOP_LEFT, (LV_HOR_RES/2) + shadow_offsetx, 126 + shadow_offsety);
+    lv_obj_align(DDataS.stat2, face, LV_ALIGN_IN_TOP_LEFT, (HOR_RES/2) + shadow_offsetx, 126 + shadow_offsety);
     lv_obj_align(DDataS.stat3, face, LV_ALIGN_IN_TOP_LEFT, 10 + shadow_offsetx, 163 + shadow_offsety);
-    lv_obj_align(DDataS.stat4, face, LV_ALIGN_IN_TOP_LEFT, (LV_HOR_RES/2) + shadow_offsetx, 163 + shadow_offsety);
+    lv_obj_align(DDataS.stat4, face, LV_ALIGN_IN_TOP_LEFT, (HOR_RES/2) + shadow_offsetx, 163 + shadow_offsety);
 
     lv_obj_align(DData.hourmin, face, LV_ALIGN_IN_TOP_LEFT, 5, 10);
     lv_obj_align(DData.date, face, LV_ALIGN_IN_TOP_LEFT, 5, 76);
     lv_obj_align(DData.stat1, face, LV_ALIGN_IN_TOP_LEFT, 10, 126);
-    lv_obj_align(DData.stat2, face, LV_ALIGN_IN_TOP_LEFT, (LV_HOR_RES/2), 126);
+    lv_obj_align(DData.stat2, face, LV_ALIGN_IN_TOP_LEFT, (HOR_RES/2), 126);
     lv_obj_align(DData.stat3, face, LV_ALIGN_IN_TOP_LEFT, 10, 163);
-    lv_obj_align(DData.stat4, face, LV_ALIGN_IN_TOP_LEFT, (LV_HOR_RES/2), 163);
+    lv_obj_align(DData.stat4, face, LV_ALIGN_IN_TOP_LEFT, (HOR_RES/2), 163);
 }
 
 void UpdateDigital1(RTC_Date datetime, float Val1, int Val2, float Val3, int Val4)
