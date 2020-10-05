@@ -1,6 +1,6 @@
 // Roy_T_Watch
-// Configuration
-// 03.10.2020 Neuroplant
+// Configuration (config.h)
+// 05.10.2020 Neuroplant
 
 #ifndef CONFIG_H
 #define CONFIG_H
