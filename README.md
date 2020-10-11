@@ -17,7 +17,8 @@ Besonderer Dank gilt dabei folgenden Projekten:
 -   Features können in der Config.ini ein- und ausgeschaltet werden
 -   Digitanzeige (Uhrzeit und Datum und mehr) (Font :https://www.keshikan.net/fonts-e.html)
 -   Analoganzeige (durchbrochene Zeiger, Schatten)
--   Powersave 
+-   Powersave (zwei Varianten zur Auswahl)
+-   Vier Watchfaces
 ✌
 ```
 
@@ -25,7 +26,6 @@ Besonderer Dank gilt dabei folgenden Projekten:
 
 ```
 -   Weitere Codebereinigung
--   Powersave verbessern (z.Z dauert es zu lange bis die Uhr wieder hochgefahren ist...)
 -   BLE für Notifications (Gadgedbridge scheint geeignet)
 -   Aktionen im Smarthome auslösen (MQTT)
 -   Standby verzögern wenn Interaktionen mit der Uhr erfolgen
