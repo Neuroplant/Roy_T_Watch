@@ -5,37 +5,34 @@
 #include "Digital1.h"
 #include "config.h"
 
-void SetupDigital1(lv_obj_t *face)
+void SetupDigital1(lv_obj_t* face)
 {
     LV_FONT_DECLARE(D14Seg_32p);        //select font "D14Seg_32p.c" (for small fields)
     LV_FONT_DECLARE(D14Seg_64p);        //select font "D14Seg_64p.c" (for big fields)
 
     //Backround
-    LV_IMG_DECLARE(BACKGROUND_PIC);
-    lv_img_set_src(face, &BACKGROUND_PIC);
+    LV_IMG_DECLARE(BACKGROUND_D1);
+    lv_img_set_src(face, &BACKGROUND_D1);
     lv_obj_align(face, NULL, LV_ALIGN_CENTER, 0, 0);
-    lv_style_set_bg_color(&bg_style, LV_STATE_DEFAULT, LV_COLOR_LCD_BG_BL_ON);
-    lv_style_set_bg_opa(&bg_style, LV_STATE_DEFAULT, LV_OPA_50);
-    lv_obj_add_style(face, LV_STATE_DEFAULT, &bg_style);
-    
+
     //init styles
     lv_style_init(&style_D1);
     lv_style_init(&style_D1s);
     lv_style_init(&style_D2);
     lv_style_init(&style_D2s);
-    
+
     //Set Text Color to black
     lv_style_set_text_color(&style_D1, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_style_set_text_color(&style_D1s, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_style_set_text_color(&style_D2, LV_STATE_DEFAULT, LV_COLOR_BLACK);
     lv_style_set_text_color(&style_D2s, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    
+
     //Set Text fonts
     lv_style_set_text_font(&style_D1, LV_STATE_DEFAULT, &D14Seg_64p);
     lv_style_set_text_font(&style_D1s, LV_STATE_DEFAULT, &D14Seg_64p);
     lv_style_set_text_font(&style_D2, LV_STATE_DEFAULT, &D14Seg_32p);
     lv_style_set_text_font(&style_D2s, LV_STATE_DEFAULT, &D14Seg_32p);
-    
+
     //Set Text Opaque (Cover for Text, 40% for Shadow)
     lv_style_set_text_opa(&style_D1, LV_STATE_DEFAULT, LV_OPA_COVER);
     lv_style_set_text_opa(&style_D1s, LV_STATE_DEFAULT, LV_OPA_40);
@@ -73,41 +70,42 @@ void SetupDigital1(lv_obj_t *face)
     lv_obj_add_style(DData.stat3, LV_OBJ_PART_MAIN, &style_D2);
     lv_obj_add_style(DData.stat4, LV_OBJ_PART_MAIN, &style_D2);
 
-    //position fields
-	
-    
+    //position fields    
     lv_obj_align(DDataS.hourmin, face, LV_ALIGN_IN_TOP_LEFT, 5 + shadow_offsetx, 10 + shadow_offsety);
     lv_obj_align(DDataS.date, face, LV_ALIGN_IN_TOP_LEFT, 5 + shadow_offsetx, 76 + shadow_offsety);
     lv_obj_align(DDataS.stat1, face, LV_ALIGN_IN_TOP_LEFT, 10 + shadow_offsetx, 126 + shadow_offsety);
-    lv_obj_align(DDataS.stat2, face, LV_ALIGN_IN_TOP_LEFT, (HOR_RES/2) + shadow_offsetx, 126 + shadow_offsety);
+    lv_obj_align(DDataS.stat2, face, LV_ALIGN_IN_TOP_LEFT, (LV_HOR_RES / 2) +15+ shadow_offsetx, 126 + shadow_offsety);
     lv_obj_align(DDataS.stat3, face, LV_ALIGN_IN_TOP_LEFT, 10 + shadow_offsetx, 163 + shadow_offsety);
-    lv_obj_align(DDataS.stat4, face, LV_ALIGN_IN_TOP_LEFT, (HOR_RES/2) + shadow_offsetx, 163 + shadow_offsety);
+    lv_obj_align(DDataS.stat4, face, LV_ALIGN_IN_TOP_LEFT, (LV_HOR_RES / 2) +15+ shadow_offsetx, 163 + shadow_offsety);
 
     lv_obj_align(DData.hourmin, face, LV_ALIGN_IN_TOP_LEFT, 5, 10);
     lv_obj_align(DData.date, face, LV_ALIGN_IN_TOP_LEFT, 5, 76);
     lv_obj_align(DData.stat1, face, LV_ALIGN_IN_TOP_LEFT, 10, 126);
-    lv_obj_align(DData.stat2, face, LV_ALIGN_IN_TOP_LEFT, (HOR_RES/2), 126);
+    lv_obj_align(DData.stat2, face, LV_ALIGN_IN_TOP_LEFT, (LV_HOR_RES / 2)+15, 126);
     lv_obj_align(DData.stat3, face, LV_ALIGN_IN_TOP_LEFT, 10, 163);
-    lv_obj_align(DData.stat4, face, LV_ALIGN_IN_TOP_LEFT, (HOR_RES/2), 163);
-}
+    lv_obj_align(DData.stat4, face, LV_ALIGN_IN_TOP_LEFT, (LV_HOR_RES / 2)+15, 163);
+};
+
 
 void UpdateDigital1(RTC_Date datetime, float Val1, int Val2, float Val3, int Val4)
 {
-    // ":" only on even seconds
+    /* Floating-point is disabled by default for code size reasons; you can re-enable it by changing LV_SPRINTF_DISABLE_FLOAT in your lv_conf.h file.*/
+// ":" only on even seconds
     if (((datetime.second / 2) * 2) == (datetime.second))
     {
         lv_label_set_text_fmt(DDataS.hourmin, "%02u:%02u", datetime.hour, datetime.minute);
-    } else {
+    }
+    else {
         lv_label_set_text_fmt(DDataS.hourmin, "%02u %02u", datetime.hour, datetime.minute);
     };
     lv_label_set_text_fmt(DDataS.date, "%02u.%02u.%04u", datetime.day, datetime.month, datetime.year);
-    lv_label_set_text_fmt(DDataS.stat1, "%0.02f A", Val1);
-    lv_label_set_text_fmt(DDataS.stat2, "%02u", Val2);
-    lv_label_set_text_fmt(DDataS.stat3, "%0.02f V", Val3);
-    lv_label_set_text_fmt(DDataS.stat4, "%02u", Val4);
+    lv_label_set_text_fmt(DDataS.stat1, "%3.2fA", Val1);
+    lv_label_set_text_fmt(DDataS.stat2, "%02u%%", Val2);
+    lv_label_set_text_fmt(DDataS.stat3, "%3.2fV", (Val3/1000));
+    lv_label_set_text_fmt(DDataS.stat4, "%02us", Val4);
 
     lv_label_set_text(DData.hourmin, lv_label_get_text(DDataS.hourmin));
-    lv_label_set_text(DData.date,lv_label_get_text(DDataS.date));
+    lv_label_set_text(DData.date, lv_label_get_text(DDataS.date));
     lv_label_set_text(DData.stat1, lv_label_get_text(DDataS.stat1));
     lv_label_set_text(DData.stat2, lv_label_get_text(DDataS.stat2));
     lv_label_set_text(DData.stat3, lv_label_get_text(DDataS.stat3));

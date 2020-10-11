@@ -1,6 +1,6 @@
 // Roy_T_Watch
 // Configuration (config.h)
-// 05.10.2020 Neuroplant
+// 11.10.2020 Neuroplant
 
 #ifndef CONFIG_H
 #define CONFIG_H
@@ -18,28 +18,40 @@
 
 // => Function select
 #define LILYGO_WATCH_LVGL               //To use LVGL, you need to enable the macro LVGL
-
+#include <WiFi.h>
+#include <math.h>
+#include <iostream>
+#include <string>
 #include <LilyGoWatch.h>
+#include "constants.h"
+
 
 // Personal Configuration - Comment out to disable
-#define SLEEP_TIMER 20			            // Sleep after 20s
+
+// !!! only use one of the Sleep/Wakup-Funktions !!!! Testing
+//#define BUTTON_WAKE 20 * 1000
+#define SENSOR_WAKE 20 * 1000
 #define DIGITAL_1				                // Digital Watchface
 #define ANALOG_1				                // Analog Watchface
-#define BAT_LVL				                  // Battery Level Bar
-#define BACKGROUND_PIC	Drache          // use "Drache.c" as Background for first Watchface - see https://lvgl.io/tools/imageconverter to create your own
-#define BACKGROUND_PIC2	Logo_lvgl       // use "Logo_lvgl.c" as Backgroud for second Watchface ...
+#define ANALOG_2				                // Analog2 Watchface
+#define WELTRAUM				                // Weltraum Watchface
+
+#define BACKGROUND_D1	 Drache          // use "Drache.c" as Background for first Watchface - see https://lvgl.io/tools/imageconverter to create your own
+#define BACKGROUND_A1	 Logo_lvgl       // use "Logo_lvgl.c" as Backgroud for second Watchface ...
+#define BACKGROUND_A2	 Logo_lvgl 
+#define BACKGROUND_SPACE sonne 
 #define WIFI_NTP                        // activate wifi to sync time with ntp
+/*
+when using WIFI_NTP also create a "secret.h" containing :
+	#ifndef SECRET_H
+	#define SECRET_H
 
-const int shadow_offsetx = 3;				//Shadow offset x
-const int shadow_offsety = 4;
-const int HOR_RES = 240, VER_RES = 240;
+	#define SSID "YOURSSID"
+	#define PASSWORD "YOURPASSWORD"
 
-#define LV_COLOR_LCD_BG_BL_ON LV_COLOR_MAKE(0xA8, 0xC6, 0x4E)   //Old Style LCD Simulation Background /Light off
-#define LV_COLOR_LCD_BG_BL_OFF LV_COLOR_MAKE(0x3C, 0x41, 0x2C)  //Old Style LCD Simulation Background /Light off
-#define LV_COLOR_LCD_SEG_ON LV_COLOR_MAKE(0xF0, 0xFA, 0xF0)     //Old Style LCD Simulation Segment on
-#define LV_COLOR_LCD_SEG_OFF LV_COLOR_MAKE(0xFF, 0xFF, 0xFF)    //Old Style LCD Simulation Segment off/Light off/Better use OPA_10
-#define LV_COLOR_LCD_SEG_SHAD LV_COLOR_MAKE(0xFF, 0xFF, 0xFF)   //Old Style LCD Simulation Segment Shadow (only if Light on)/Better use OPA_50
+	#endif
+*/
 
-#define LV_COLOR_PHOSPHOR LV_COLOR_MAKE(0x88, 0xFF, 0x88) 
+
 
 #endif // !CONFIG_H

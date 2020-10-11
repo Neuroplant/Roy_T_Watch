@@ -1,6 +1,6 @@
 // Roy_T_Watch
 // Timesync via Wifi with NTP (wifi_ntp.cpp)
-// 05.10.2020 Neuroplant
+// 11.10.2020 Neuroplant
 
 #include "wifi_ntp.h"
 #include <WiFi.h>
@@ -22,7 +22,7 @@ const char* ntpServer = "europe.pool.ntp.org";
 const long gmtOffset_sec = 3600;
 const int  daylightOffset_sec = 3600;
 
-bool syncRtc2Ntp(PCF8563_Class *wwatch)
+bool GetNTP_Time(PCF8563_Class *wwatch)
 {
     WiFi.begin(ssid, ssid_passphrase);
  // after 6 sec if WiFi is not found abort and avoid locking the setup
